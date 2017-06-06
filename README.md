@@ -11,4 +11,10 @@ This web extension integrates into Agate and adds a new section to the clockings
   - Edge > 14
 
 # Installation
-No packaged version yet, download the repository and use developper mode to test it out.
+Download the package for your browser from the [release page](https://github.com/nojhamster/agate-extension/releases).
+
+## Chrome
+Open the extension tab (menu -> more tools -> extensions) and drop the CRX file into the window.
+
+## Firefox
+Open the extension tab (menu -> modules -> extensions) and drop the XPI file into the window.
