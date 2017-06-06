@@ -3,7 +3,7 @@
   "name": "Agate made simple",
   "description": "Summary of your clockings with no headache.",
   "author": "Yannick Schurter",
-  "version": "0.1",
+  "version": "0.1.0",
   "icons": {
     "16": "icon_16.png",
     "48": "icon_48.png",
