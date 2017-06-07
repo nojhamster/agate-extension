@@ -1,20 +1,26 @@
-# agate-extension
-This web extension integrates into Agate and adds a new section to the clockings summary of the current month. This section contains the following metrics :
-  - The effective work time, including break time and time since the last clock-in.
-  - The remaining work time.
-  - The end-of-day time. (assuming a break time of 45 min if it's not taken yet)
-  - The state of your work time as of previous day, including hours transferred from the previous month.
+# Agate made simple
+Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résumé horaire du mois en cours. Celle-ci contient les métriques suivantes :
+  - Le temps de travail effectif, incluant le temps de pause.
+  - Le temps de travail restant.
+  - L'heure de fin de journée (en supposant une pause de 45min si celle-ci n'a pas encore été prise).
+  - L'avance horaire au jour précédent.
 
-# Browser support
+# Navigateurs supportés
   - Chrome > 49
   - Firefox > 34
   - Edge > 14
 
 # Installation
-Download the package for your browser from the [release page](https://github.com/nojhamster/agate-extension/releases).
 
 ## Chrome
-Open the extension tab (menu -> more tools -> extensions) and drop the CRX file into the window.
+  - Téléchargez le dernier fichier CRX depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
+  - Ouvrez l'onglet des extensions (menu -> plus d'outils -> extensions).
+  - Déposez le fichier CRX dans la fenêtre.
 
 ## Firefox
-Open the extension tab (menu -> modules -> extensions) and drop the XPI file into the window.
+  - Téléchargez le dernier fichier XPI depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
+  - Ouvrez l'onglet des extensions (menu -> modules -> extensions).
+  - Déposez le fichier XPI dans la fenêtre.
+
+## Edge
+Edge ne supportant que les extensions provenant du Microsoft Store, l'usage de l'extension est actuellement limité aux développeurs curieux. Cette dernière nécessite d'activer le mode développeur, et est désactivée à chaque redémarrage du navigateur.
