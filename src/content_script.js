@@ -9,8 +9,9 @@
   const transfered  = stringToDuration(getTransferedTime())
   const clockings   = getClockings()
 
-  const worktime  = moment.duration(0).add(dailyBreak).subtract(45, 'm')
-  const remaining = moment.duration(0).add(dailyTotal)
+  const now       = moment()
+  const worktime  = moment.duration(0)
+  const remaining = moment.duration(dailyTotal)
 
   if (clockings.length > 0) {
     clockings.forEach(({ clockIn, clockOut }) => {
@@ -24,21 +25,32 @@
 
     if (lastClockIn && !lastClockOut) {
       // If the last clockin has no associated clockout, add the period going from clockin to current time
-      worktime.add(moment().hours(), 'h').add(moment().minutes(), 'm').subtract(lastClockIn)
+      worktime.add(now.hours(), 'h').add(now.minutes(), 'm').subtract(lastClockIn)
     }
   }
 
+  if (dailyBreak.asMinutes() > 0 && dailyBreak.asMinutes() < 45) {
+    // If the break time has been taken and lasted less than 45min,
+    // subtract every minute under 45 from the worktime
+    worktime.add(dailyBreak).subtract(45, 'm')
+  }
+  
   remaining.subtract(worktime)
+  monthlyDiff.add(transfered)
 
-  const endOfDay    = moment().add(remaining)
-  const currentDiff = moment.duration(0).add(monthlyDiff).add(transfered)
-  const recapBody   = document.querySelector('#recap_mensuel > tbody')
+  const endOfDay  = moment(now).add(remaining)
+  const recapBody = document.querySelector('#recap_mensuel > tbody')
+  
+  if (!dailyBreak.asMinutes()) {
+    // If the break time has not been taken yet, assume it will last 45min
+    endOfDay.add(45, 'm')
+  }
 
   recapBody.appendChild(createHeaderRow(), recapBody.firstChild)
   recapBody.appendChild(createRow('Temps de travail effectif', durationToString(worktime)), recapBody.firstChild)
   recapBody.appendChild(createRow('Reste à faire', durationToString(remaining)), recapBody.firstChild)
   recapBody.appendChild(createRow('Fin de la journée', endOfDay.format('HH[h]mm')), recapBody.firstChild)
-  recapBody.appendChild(createRow('Avance J-1', durationToString(currentDiff)), recapBody.firstChild)
+  recapBody.appendChild(createRow('Avance J-1', durationToString(monthlyDiff)), recapBody.firstChild)
 })()
 
 /**
@@ -142,5 +154,5 @@ function durationToString (duration) {
   if (hours < 10) { hours = `0${hours}` }
   if (minutes < 10) { minutes = `0${minutes}` }
 
-  return duration.asSeconds() >= 0 ? `${hours}h${minutes}` : `-${hours}h${minutes}`
+  return duration.asMinutes() >= 0 ? `${hours}h${minutes}` : `-${hours}h${minutes}`
 }
