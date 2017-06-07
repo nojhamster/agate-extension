@@ -136,9 +136,7 @@ function getTextOf(selector) {
  * @param {String} str
  */
 function stringToDuration (str) {
-  if (!str) { return null }
-  const duration = moment.duration(str.replace('h', ':'))
-  return duration.isValid() ? duration : null
+  return moment.duration((str || '').replace('h', ':'))
 }
 
 /**
