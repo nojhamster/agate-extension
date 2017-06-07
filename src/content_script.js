@@ -16,22 +16,18 @@
   if (clockings.length > 0) {
     clockings.forEach(({ clockIn, clockOut }) => {
       if (clockIn && clockOut) {
-        // For each in/out couple, add the period to the worktime
+        // For each clock-in/clock-out couple, add the period to the work time
         worktime.add(clockOut).subtract(clockIn)
+      } else if (clockIn) {
+        // If the clock-in has no associated clock-out, add the period going from clock-in to current time
+        worktime.add(now.hours(), 'h').add(now.minutes(), 'm').subtract(clockIn)
       }
     })
-
-    const { clockIn: lastClockIn, clockOut: lastClockOut } = clockings[clockings.length - 1]
-
-    if (lastClockIn && !lastClockOut) {
-      // If the last clockin has no associated clockout, add the period going from clockin to current time
-      worktime.add(now.hours(), 'h').add(now.minutes(), 'm').subtract(lastClockIn)
-    }
   }
 
   if (dailyBreak.asMinutes() > 0 && dailyBreak.asMinutes() < 45) {
     // If the break time has been taken and lasted less than 45min,
-    // subtract every minute under 45 from the worktime
+    // subtract every minute under 45 from the work time
     worktime.add(dailyBreak).subtract(45, 'm')
   }
   
@@ -108,7 +104,7 @@ function getClockings () {
 }
 
 /**
- * Get worktime transfered from the previous month
+ * Get work time transfered from the previous month
  */
 function getTransferedTime () {
   const recap = document.querySelectorAll('#recap_mensuel td')
