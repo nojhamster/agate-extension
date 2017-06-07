@@ -6,12 +6,17 @@
   const monthlyDiff = stringToDuration(getTextOf('#fiche_pointage tfoot .diff'))
   const dailyTotal  = stringToDuration(getTextOf('#fiche_pointage .jour_courant .champs_temps_theorique'))
   const dailyBreak  = stringToDuration(getTextOf('#fiche_pointage .jour_courant .champs_pause'))
+  const regulation  = stringToDuration(getTextOf('#fiche_pointage .jour_courant span.regulation'))
   const transfered  = stringToDuration(getTransferedTime())
   const clockings   = getClockings()
 
   const now       = moment()
   const worktime  = moment.duration(0)
   const remaining = moment.duration(dailyTotal)
+
+  if (regulation.isValid()) {
+    worktime.add(regulation)
+  }
 
   if (clockings.length > 0) {
     clockings.forEach(({ clockIn, clockOut }) => {
