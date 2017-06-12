@@ -3,6 +3,9 @@
 
   if (!document.querySelector('#fiche_pointage .jour_courant')) { return }
 
+  const recapBody = document.querySelector('#recap_mensuel > tbody')
+  if (!recapBody) { return }
+
   const monthlyDiff = stringToDuration(getTextOf('#fiche_pointage tfoot .diff'))
   const dailyTotal  = stringToDuration(getTextOf('#fiche_pointage .jour_courant .champs_temps_theorique'))
   const dailyBreak  = stringToDuration(getTextOf('#fiche_pointage .jour_courant .champs_pause'))
@@ -35,13 +38,12 @@
     // subtract every minute under 45 from the work time
     worktime.add(dailyBreak).subtract(45, 'm')
   }
-  
+
   remaining.subtract(worktime)
   monthlyDiff.add(transfered)
 
   const endOfDay  = moment(now).add(remaining)
-  const recapBody = document.querySelector('#recap_mensuel > tbody')
-  
+
   if (!dailyBreak.asMinutes()) {
     // If the break time has not been taken yet, assume it will last 45min
     endOfDay.add(45, 'm')
