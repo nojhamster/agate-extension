@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Agate made simple",
-  "description": "Summary of your clockings with no headache.",
+  "name": "Agate-Badge made simple",
+  "description": "Résume votre sitation horaire, sans prise de tête.",
   "author": "Yannick Schurter",
   "version": "0.2.0",
   "icons": {
