@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Agate Bookmarklet</title>
+  <style>
+    body {
+      padding: 40px 0 20px;
+      margin: 0;
+      font: 13px "lucida grande", tahoma, sans-serif;
+      color: #333;
+      background: #fff;
+    }
+    .container {
+      position: relative;
+      overflow: hidden;
+      max-width: 600px;
+      width: 600px;
+      padding: 40px 60px;
+      border: 1px solid #ccc;
+      margin: 0 auto;
+      background: #fff;
+    }
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+    p {
+      text-align: justify;
+      line-height: 18px;
+    }
+    .centered {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Agate Bookmarklet</h1>
+
+    <h2>Description</h2>
+    <p>Ce bookmarklet permet d'exécuter <a href="https://github.com/nojhamster/agate-extension">Agate-Badge Made Simple</a> depuis votre barre de favoris. Il doit être activé manuellement, mais reste une alternative simple à l'extension si celle-ci n'est pas disponible pour votre navigateur.</p>
+
+    <h2>Utilisation</h2>
+    <p><strong>Glissez-déposez</strong> ce gros bouton vert dans votre barre de favoris. Pour l'utiliser, rendez-vous sur la page des horaires mensuels et cliquez sur le favori. Une section <strong>"En bref"</strong> apparaîtra alors sous la section <strong>"Etat des heures"</strong>.</p>
+    <p class="centered">
+      <a class="button" href="javascript:(function(){let a=document.createElement('script');a.async=!0,a.src='https://cdn.rawgit.com/nojhamster/agate-extension/master/src/moment.min.js',a.onload=function(){let b=document.createElement('script');b.async=!0,b.src='https://cdn.rawgit.com/nojhamster/agate-extension/master/src/content_script.js',document.body.appendChild(b)},document.body.appendChild(a)})();">Script Agate</a>
+    </p>
+  </div>
+</body>
+</html>
