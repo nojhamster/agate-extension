@@ -24,5 +24,6 @@ Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résu
   - Ouvrez l'onglet des extensions (menu -> modules -> extensions).
   - Déposez le fichier XPI dans la fenêtre.
 
-## Edge
-Edge ne supportant que les extensions provenant du Microsoft Store, l'usage de l'extension est actuellement limité aux développeurs curieux. Cette dernière nécessite d'activer le mode développeur, et est désactivée à chaque redémarrage du navigateur.
+## Alternative : marque-page
+
+Si l'extension n'est pas disponible pour votre navigateur ou ne fonctionne pas correctement, vous pouvez installer [ce bookmarklet](https://cdn.rawgit.com/nojhamster/agate-extension/master/bookmark.html). Vous pourrez ensuite l'exécuter depuis votre barre de favoris, après vous être rendus sur la page des horaires mensuels.
