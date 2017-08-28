@@ -17,6 +17,8 @@ Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résu
   - Ouvrez l'onglet des extensions (menu -> plus d'outils -> extensions).
   - Déposez le fichier CRX dans la fenêtre.
 
+**NB:** sous windows, Chrome désactive les extensions ne provenant pas du Web Store à chaque démarrage.
+
 ## Firefox
   - Téléchargez le dernier fichier XPI depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
   - Ouvrez l'onglet des extensions (menu -> modules -> extensions).
