@@ -9,6 +9,7 @@
     "48": "icon_48.png",
     "128": "icon_128.png"
   },
+  "update_url": "http://0.0.0.0/",
   "content_scripts": [
     {
       "matches": ["*://*.agateb.cnrs.fr/index.php*controller=Pointage/Feuille*"],
