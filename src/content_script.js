@@ -52,11 +52,11 @@
           m('td.libelle', 'Temps de pause'),
           m('td', minutesToString(dailyBreak))
         ]),
-        m('tr', { style: borderTop }, [
+        m('tr', [
           m('td.libelle', 'Régulations'),
           m('td', minutesToString(regulation))
         ]),
-        m('tr', [
+        m('tr', { style: borderTop }, [
           m('td.libelle', 'Reste à faire'),
           m('td', minutesToString(remaining))
         ]),
@@ -86,7 +86,7 @@
    */
   function getWorktime () {
     let worktime = 0
-    
+
     if (clockings.length > 0) {
       clockings.forEach(({ clockIn, clockOut }) => {
         if (clockIn && clockOut) {
