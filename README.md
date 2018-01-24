@@ -1,9 +1,12 @@
 # Agate made simple
 Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résumé horaire du mois en cours. Celle-ci contient les métriques suivantes :
-  - Le temps de travail effectif, incluant le temps de pause.
+  - Le temps de travail effectif (somme des badgeages).
+  - Le temps de pause.
+  - Les régulations, incluant la pause méridienne (sauf en cas de demi-journée).
   - Le temps de travail restant.
-  - L'heure de fin de journée (en supposant une pause de 45min si celle-ci n'a pas encore été prise).
-  - L'avance horaire au jour précédent.
+  - L'heure de fin de journée prévue.
+  - L'état horaire au jour précédent
+  - L'état horaire actuel
 
 # Navigateurs supportés
   - Chrome > 49
