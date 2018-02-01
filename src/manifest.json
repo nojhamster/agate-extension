@@ -14,7 +14,7 @@
     {
       "matches": ["*://*.agateb.cnrs.fr/index.php*controller=Pointage/Feuille*"],
       "run_at": "document_idle",
-      "js": ["moment.min.js", "content_script.js"]
+      "js": ["content_script.js"]
     }
   ]
 }
