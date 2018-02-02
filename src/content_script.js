@@ -85,7 +85,7 @@
     document.getElementById('as-cdiff').textContent      = minutesToString(currentDiff)
 
     // Update metrics every 15s
-    setImmediate(updateMetrics, 15000)
+    setTimeout(updateMetrics, 15000)
   }
 
   /**
