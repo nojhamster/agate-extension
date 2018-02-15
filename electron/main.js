@@ -48,6 +48,8 @@ function createMainWindow () {
 exports.loadMainWindow = loadMainWindow
 
 function loadMainWindow () {
+  mainWindow.focus()
+
   const store = new Store()
   const unitCode = store.get('unitCode')
   const userId = store.get('userId')
