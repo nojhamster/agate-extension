@@ -1,40 +1,29 @@
-const { app, Menu, BrowserWindow, dialog, session } = require('electron')
+const { app, Menu, BrowserWindow, session } = require('electron')
 const Store = require('electron-store')
-const path = require('path')
-const url = require('url')
+const store = new Store()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createMainWindow () {
+  let windowState = store.get('windowState') || {}
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: true,
-    width: 1280,
-    height: 960,
-    title: 'Agate Desktop',
-    webPreferences: {
-      nodeIntegration: false,
-      preload: path.resolve(__dirname, 'content_script.js')
-    }
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width || 1024,
+    height: windowState.height || 768,
+    maximized: !!windowState.maximized,
+    title: 'Agate'
   })
 
   createMenu(mainWindow)
-  loadMainWindow()
+  loadMain()
 
-  mainWindow.webContents.on('did-fail-load', () => {
-    dialog.showMessageBox({
-      type: 'warning',
-      title: 'Oups !',
-      message: "La page ne s'est pas chargée correctement. Le code unité est-il valide ?",
-      buttons: ['Vérifier mes paramètres', 'Fermer']
-    }, (index) => {
-      if (index === 0) {
-        createSettingsWindow()
-      }
-    })
-  });
+  mainWindow.on('close', saveWindowState);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
@@ -45,81 +34,12 @@ function createMainWindow () {
   })
 }
 
-exports.loadMainWindow = loadMainWindow
-
-function loadMainWindow () {
-  mainWindow.focus()
-
-  const store = new Store()
-  const unitCode = store.get('unitCode')
-  const userId = store.get('userId')
-  const recapOnStart = !!store.get('recapOnStart')
-
-  if (!unitCode) {
-    return dialog.showMessageBox({
-      type: 'info',
-      title: 'Code unité requis',
-      message: "Aucun code unité n'est encore configuré. Avant de commencer, veuillez renseigner votre code unité dans les paramètres.",
-      buttons: ['Ouvrir les paramètres', 'Fermer']
-    }, (index) => {
-      if (index === 0) {
-        createSettingsWindow()
-      }
-    })
-  }
-
-  const targetUrl = {
-    protocol: 'https',
-    hostname: `${unitCode}.agateb.cnrs.fr`,
-    pathname: '/index.php',
-    query: {
-      controller: 'Pointage/Calendar',
-      action: 'show',
-      user_id: userId
-    }
-  }
-
-  if (recapOnStart) {
-    const now = new Date()
-    const year = now.getFullYear()
-    let month = now.getMonth() + 1
-    const lastDay = new Date(year, month, 0).getDate()
-
-    if (month < 10) { month = `0${month}` }
-
-    targetUrl.query = {
-      controller: 'Pointage/Feuille',
-      action: 'showTempsTheorique',
-      date_debut:`${year}-${month}-01`,
-      date_fin: `${year}-${month}-${lastDay}`,
-      user_id: userId
-    }
-  }
-
-  mainWindow.loadURL(url.format(targetUrl))
+function loadMain () {
+  mainWindow.loadFile('views/index.html')
 }
 
-function createSettingsWindow () {
-  const settingsWindow = new BrowserWindow({
-    modal: true,
-    show: false,
-    frame: false,
-    width: 530,
-    height: 400,
-    parent: mainWindow
-  })
-
-  settingsWindow.once('ready-to-show', () => {
-    settingsWindow.show()
-  })
-
-  settingsWindow.on('close', loadMainWindow)
-
-  settingsWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'settings.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+function loadSettings () {
+  mainWindow.loadFile('views/settings.html')
 }
 
 function createMenu (mainWindow) {
@@ -128,19 +48,24 @@ function createMenu (mainWindow) {
       label: 'Application',
       submenu: [
         {
+          label: 'Accueil',
+          accelerator: 'Ctrl+H',
+          click () { loadMain() }
+        },
+        {
           label: 'Se déconnecter',
           accelerator: 'Ctrl+D',
           click () {
             clearCasData(err => {
               if (err) { console.error(err) }
-              loadMainWindow()
+              loadMain()
             })
           }
         },
         {
           label: 'Paramètres',
           accelerator: 'Ctrl+,',
-          click () { createSettingsWindow() }
+          click () { loadSettings() }
         },
         { type: 'separator' },
         { role: 'quit', label: 'Quitter' }
@@ -175,11 +100,22 @@ function createMenu (mainWindow) {
 }
 
 /**
- * Clear CAS storage data, resulting in a disconnection
+ * Save window position, size and maximized state
+ */
+function saveWindowState () {
+  if (mainWindow) {
+    const bounds = mainWindow.getBounds()
+    const maximized = mainWindow.isMaximized()
+    store.set('windowState', { ...bounds, maximized })
+  }
+}
+
+/**
+ * Clear CAS cookies, resulting in a disconnection
  */
 function clearCasData (callback) {
   if (mainWindow) {
-    mainWindow.webContents.session.clearStorageData(callback)
+    session.fromPartition('persist:agate').clearStorageData({ storages: ['cookies'] }, callback)
   }
 }
 
@@ -190,7 +126,7 @@ function clearCasData (callback) {
 function persistCasCookies (callback) {
   if (!mainWindow) { return callback() }
 
-  const sessionCookies = mainWindow.webContents.session.cookies
+  const sessionCookies = session.fromPartition('persist:agate').cookies
   const casUrl = 'https://cas.cnrs.fr/cas/'
 
   sessionCookies.get({ url: casUrl }, (error, cookies) => {

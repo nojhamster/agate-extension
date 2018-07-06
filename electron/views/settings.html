@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+
+  <title>Paramètres</title>
+  <link rel="stylesheet" href="../node_modules/uikit/dist/css/uikit.min.css">
+  <script src="../node_modules/uikit/dist/js/uikit.min.js"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      background: linear-gradient(90deg, #76afa6 50%, #e7aa94 50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="uk-container uk-container-large uk-height-1-1 uk-flex uk-flex-center uk-flex-middle">
+    <div class="uk-card uk-card-default uk-background-default uk-border-rounded uk-box-shadow-medium uk-width-large">
+      <div class="uk-card-header">
+        <h1 class="uk-card-title uk-text-center">Paramètres</h1>
+      </div>
+
+      <div class="uk-card-body">
+        <form id="settings-form" action="#">
+          <div class="uk-margin">
+            <label class="uk-form-label" for="unit-code">Code unité <span class="uk-text-muted">(https://<strong>ups76-1</strong>.agateb.cnrs.fr)</span></label>
+            <div class="uk-form-controls">
+              <input id="unit-code" class="uk-input" type="text" placeholder="Ex: ups76-1" autofocus>
+            </div>
+          </div>
+
+          <div class="uk-margin">
+            <label class="uk-form-label" for="user-id">Identifiant utilisateur <span class="uk-text-muted">(/index.php?user_id=<strong>2529</strong>)</span></label>
+            <div class="uk-form-controls">
+              <input id="user-id" class="uk-input" type="text" placeholder="Ex: 2529">
+            </div>
+          </div>
+
+          <div class="uk-margin">
+            <label><input class="uk-checkbox" type="checkbox" id="recap-on-start"> Démarrer Agate Badge sur la feuille mensuelle</label>
+          </div>
+        </form>
+      </div>
+
+      <div class="uk-card-footer uk-text-center">
+        <input type="submit" form="settings-form" class="uk-button uk-button-primary" value="Sauvegarder">
+        <a href="./index.html" class="uk-button uk-button-default">Annuler</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const Store = require('electron-store')
+    const store = new Store()
+
+    const settingsForm = document.getElementById('settings-form')
+    const unitInput    = document.getElementById('unit-code')
+    const userInput    = document.getElementById('user-id')
+    const recapOnStart = document.getElementById('recap-on-start')
+
+    unitInput.value = store.get('unitCode') || ''
+    userInput.value = store.get('userId') || ''
+    recapOnStart.checked = !!store.get('recapOnStart')
+
+    settingsForm.addEventListener('submit', event => {
+      event.preventDefault()
+      store.set('unitCode', unitInput.value.toLowerCase())
+      store.set('userId', userInput.value)
+      store.set('recapOnStart', recapOnStart.checked)
+      window.location.href = './index.html'
+    })
+  </script>
+</body>
+</html>
