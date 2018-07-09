@@ -40,6 +40,19 @@
       webview.addEventListener('did-stop-loading', () => {
         loader.setAttribute('hidden', true)
       })
+      webview.addEventListener('did-fail-load', () => {
+        UIkit.modal.confirm('Le chargement de la page a échoué.', {
+          labels: { ok: 'Recharger', cancel: 'Retour' }
+        }).then(() => {
+          webview.reload()
+        }).catch(() => {
+          if (webview.canGoBack()) {
+            webview.goBack()
+          } else {
+            window.location.href = './index.html'
+          }
+        })
+      })
     }
   </script>
 </body>

@@ -49,6 +49,19 @@
       webview.addEventListener('did-stop-loading', () => {
         loader.setAttribute('hidden', true)
       })
+      webview.addEventListener('did-fail-load', () => {
+        UIkit.modal.confirm('Le chargement de la page a échoué. Cela peut être dû à un mauvais paramétrage de votre code unité.', {
+          labels: { ok: 'Recharger', cancel: 'Retour' }
+        }).then(() => {
+          webview.reload()
+        }).catch(() => {
+          if (webview.canGoBack()) {
+            webview.goBack()
+          } else {
+            window.location.href = './index.html'
+          }
+        })
+      })
 
       if (!unitCode) {
         return window.location.href = 'index.html'
