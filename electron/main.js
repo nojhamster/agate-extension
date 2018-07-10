@@ -1,4 +1,4 @@
-const { app, Menu, BrowserWindow, session } = require('electron')
+const { app, Menu, BrowserWindow, session, shell } = require('electron')
 const Store = require('electron-store')
 const store = new Store()
 
@@ -91,6 +91,10 @@ function createMenu (mainWindow) {
     {
       label: 'Aide',
       submenu: [
+        {
+          label: 'Signaler un problème',
+          click () { shell.openExternal('https://github.com/nojhamster/agate-extension/issues') }
+        },
         { role: 'toggledevtools', label: 'Activer les outils de développement' }
       ]
     }
