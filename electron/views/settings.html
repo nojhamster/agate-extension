@@ -45,7 +45,14 @@
           </div>
 
           <div class="uk-margin">
-            <label><input class="uk-checkbox" type="checkbox" id="recap-on-start"> Démarrer Agate Badge sur la feuille mensuelle</label>
+            <label class="uk-form-label" for="start-page">Démarrer l'application sur</label>
+            <select id="start-page" class="uk-select">
+              <option value="home">Accueil</option>
+              <option value="agate">Agate congés</option>
+              <option value="agate-badge">Agate badge</option>
+              <option value="recap">Agate badge - feuille mensuelle *</option>
+            </select>
+            <p class="uk-text-meta">* Le démarrage sur la feuille mensuelle nécessite votre identifiant utilisateur.</p>
           </div>
         </form>
       </div>
@@ -64,17 +71,17 @@
     const settingsForm = document.getElementById('settings-form')
     const unitInput    = document.getElementById('unit-code')
     const userInput    = document.getElementById('user-id')
-    const recapOnStart = document.getElementById('recap-on-start')
+    const startPage    = document.getElementById('start-page')
 
     unitInput.value = store.get('unitCode') || ''
     userInput.value = store.get('userId') || ''
-    recapOnStart.checked = !!store.get('recapOnStart')
+    startPage.value = store.get('startPage') || 'home'
 
     settingsForm.addEventListener('submit', event => {
       event.preventDefault()
       store.set('unitCode', unitInput.value.toLowerCase())
       store.set('userId', userInput.value)
-      store.set('recapOnStart', recapOnStart.checked)
+      store.set('startPage', startPage.value)
       window.location.href = './index.html'
     })
   </script>

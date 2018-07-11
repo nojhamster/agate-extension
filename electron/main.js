@@ -10,7 +10,8 @@ app.commandLine.appendSwitch('ignore-certificate-errors')
 let mainWindow
 
 function createMainWindow () {
-  let windowState = store.get('windowState') || {}
+  const windowState = store.get('windowState') || {}
+  const startPage   = store.get('startPage')
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -24,7 +25,18 @@ function createMainWindow () {
   })
 
   createMenu(mainWindow)
-  loadMain()
+
+  switch (startPage) {
+    case 'agate':
+      loadView('agate')
+      break;
+    case 'agate-badge':
+    case 'recap':
+      loadView('agate-badge')
+      break;
+    default:
+      loadView('index')
+  }
 
   mainWindow.on('close', saveWindowState);
 
@@ -37,12 +49,8 @@ function createMainWindow () {
   })
 }
 
-function loadMain () {
-  mainWindow.loadFile('views/index.html')
-}
-
-function loadSettings () {
-  mainWindow.loadFile('views/settings.html')
+function loadView (name) {
+  mainWindow.loadFile(`views/${name}.html`)
 }
 
 function createMenu (mainWindow) {
@@ -53,7 +61,7 @@ function createMenu (mainWindow) {
         {
           label: 'Accueil',
           accelerator: 'Ctrl+H',
-          click () { loadMain() }
+          click () { loadView('index') }
         },
         {
           label: 'Se déconnecter',
@@ -61,14 +69,14 @@ function createMenu (mainWindow) {
           click () {
             clearCasData(err => {
               if (err) { console.error(err) }
-              loadMain()
+              loadView('index')
             })
           }
         },
         {
           label: 'Paramètres',
           accelerator: 'Ctrl+,',
-          click () { loadSettings() }
+          click () { loadView('settings') }
         },
         { type: 'separator' },
         { role: 'quit', label: 'Quitter' }

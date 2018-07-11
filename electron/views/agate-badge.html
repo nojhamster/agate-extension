@@ -33,7 +33,7 @@
     const store = new Store()
     const unitCode = store.get('unitCode')
     const userId = store.get('userId')
-    const recapOnStart = !!store.get('recapOnStart')
+    const recapOnStart = store.get('startPage') === 'recap'
 
 
     onload = () => {
