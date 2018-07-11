@@ -2,6 +2,9 @@ const { app, Menu, BrowserWindow, session, shell } = require('electron')
 const Store = require('electron-store')
 const store = new Store()
 
+// Workaround to avoid errors when loading over HTTPS
+app.commandLine.appendSwitch('ignore-certificate-errors')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
