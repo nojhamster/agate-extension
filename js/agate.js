@@ -1,1 +1,0 @@
-../../src/content_script.js

@@ -1,5 +1,5 @@
 if (window.location.host.endsWith('agateb.cnrs.fr')) {
-  require('./agate.js')
+  require('../extension/content_script.js')
 }
 
 if (window.location.host === 'cas.cnrs.fr') {
