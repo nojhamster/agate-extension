@@ -13,7 +13,7 @@
     "dist:windows": "electron-builder -w",
     "patchversion:bookmark": "sed -i \"s#\\(agate-extension/v\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" bookmark.html",
     "patchversion:manifest": "sed -i \"s#\\(\\\"version\\\": \\\"\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" extension/manifest.json",
-    "version": "npm run patchversion:bookmark && npm run patchversion:manifest"
+    "version": "npm run patchversion:bookmark && npm run patchversion:manifest && git add bookmark.html extension/manifest.json"
   },
   "repository": "https://github.com/nojhamster/agate-extension",
   "keywords": [
