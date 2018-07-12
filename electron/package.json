@@ -1,7 +1,7 @@
 {
   "name": "agate-desktop",
   "productName": "Agate Desktop",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Résume votre sitation horaire, sans prise de tête.",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,10 @@
     "dist:docker": "./dist.sh",
     "dist:linux": "electron-builder -l",
     "dist:mac": "electron-builder -m",
-    "dist:windows": "electron-builder -w"
+    "dist:windows": "electron-builder -w",
+    "patchversion:bookmark": "sed -i \"s#\\(agate-extension/v\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" ../bookmark.html",
+    "patchversion:manifest": "sed -i \"s#\\(\\\"version\\\": \\\"\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" ../src/manifest.json",
+    "version": "npm run patchversion:bookmark && npm run patchversion:manifest"
   },
   "repository": "https://github.com/nojhamster/agate-extension",
   "keywords": [
