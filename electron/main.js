@@ -24,8 +24,6 @@ function createMainWindow () {
     title: 'Agate'
   })
 
-  createMenu(mainWindow)
-
   switch (startPage) {
     case 'agate':
       loadView('agate')
@@ -103,6 +101,10 @@ function createMenu (mainWindow) {
       label: 'Aide',
       submenu: [
         {
+          label: 'À propos',
+          click () { createAboutWindow() }
+        },
+        {
           label: 'Signaler un problème',
           click () { shell.openExternal('https://github.com/nojhamster/agate-extension/issues') }
         },
@@ -166,10 +168,36 @@ function persistCasCookies (callback) {
   })
 }
 
+function createAboutWindow () {
+  const bounds = mainWindow.getBounds()
+  const width = 530
+  const height = 400
+
+  const aboutWindow = new BrowserWindow({
+    modal: true,
+    show: false,
+    x: Math.round(bounds.x + bounds.width / 2 - width / 2),
+    y: Math.round(bounds.y + bounds.height / 2 - height / 2),
+    width,
+    height,
+    parent: mainWindow
+  })
+
+  aboutWindow.once('ready-to-show', () => {
+    aboutWindow.show()
+  })
+
+  aboutWindow.setMenu(null)
+  aboutWindow.loadFile('views/about.html')
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createMainWindow)
+app.on('ready', () => {
+  createMenu()
+  createMainWindow()
+})
 
 let cookiesPersisted = false
 
