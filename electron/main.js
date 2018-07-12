@@ -1,6 +1,7 @@
 const { app, Menu, BrowserWindow, session, shell } = require('electron')
 const Store = require('electron-store')
 const store = new Store()
+const windowStateKeeper = require('electron-window-state');
 
 // Workaround to avoid errors when loading over HTTPS
 app.commandLine.appendSwitch('ignore-certificate-errors')
@@ -10,19 +11,23 @@ app.commandLine.appendSwitch('ignore-certificate-errors')
 let mainWindow
 
 function createMainWindow () {
-  const windowState = store.get('windowState') || {}
-  const startPage   = store.get('startPage')
+  const startPage = store.get('startPage')
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 1000,
+    defaultHeight: 800
+  })
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
     show: true,
-    x: windowState.x,
-    y: windowState.y,
-    width: windowState.width || 1024,
-    height: windowState.height || 768,
-    maximized: !!windowState.maximized,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     title: 'Agate'
   })
+
+  mainWindowState.manage(mainWindow);
 
   switch (startPage) {
     case 'agate':
@@ -36,7 +41,6 @@ function createMainWindow () {
       loadView('index')
   }
 
-  mainWindow.on('close', saveWindowState);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
@@ -114,17 +118,6 @@ function createMenu (mainWindow) {
   ])
 
   Menu.setApplicationMenu(menu)
-}
-
-/**
- * Save window position, size and maximized state
- */
-function saveWindowState () {
-  if (mainWindow) {
-    const bounds = mainWindow.getBounds()
-    const maximized = mainWindow.isMaximized()
-    store.set('windowState', { ...bounds, maximized })
-  }
 }
 
 /**
