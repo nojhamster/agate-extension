@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+
+  <title>Paramètres</title>
+  <link rel="stylesheet" href="../node_modules/uikit/dist/css/uikit.min.css">
+  <script src="../node_modules/uikit/dist/js/uikit.min.js"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body class="uk-light uk-background-secondary">
+  <div class="uk-container uk-container-small uk-height-1-1">
+    <h1 id="app-name" class="uk-text-center uk-margin-top"></h1>
+    <ul class="uk-list uk-list-divider">
+      <li>Version : <span id="app-version"></span></li>
+      <li>Electron : <span id="electron-version"></span></li>
+      <li>Chrome : <span id="chrome-version"></span></li>
+      <li>Node.js : <span id="node-version"></span></li>
+      <li>V8 : <span id="v8-version"></span>  </li>
+    </ul>
+  </div>
+
+  <script>
+    const { app } = require('electron').remote
+
+    document.getElementById('app-name').textContent = app.getName()
+    document.getElementById('app-version').textContent = app.getVersion()
+    document.getElementById('electron-version').textContent = process.versions.electron
+    document.getElementById('chrome-version').textContent = process.versions.chrome
+    document.getElementById('node-version').textContent = process.versions.node
+    document.getElementById('v8-version').textContent = process.versions.node
+  </script>
+</body>
+</html>

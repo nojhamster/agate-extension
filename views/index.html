@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr" class="uk-height-1-1">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+
+  <title>Agate</title>
+  <link rel="stylesheet" href="../node_modules/uikit/dist/css/uikit.min.css">
+  <script src="../node_modules/uikit/dist/js/uikit.min.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(90deg, #76afa6 50%, #e7aa94 50%);
+    }
+    .uk-card { cursor: pointer; }
+  </style>
+</head>
+<body class="uk-height-1-1">
+  <div class="uk-container uk-container-large uk-height-1-1 uk-flex uk-flex-center uk-flex-middle uk-flex-around">
+    <div id="agate-badge-card" class="uk-card uk-card-default uk-card-hover uk-animation-slide-left-medium uk-width-medium@s uk-width-large@l">
+      <div class="uk-card-media-top">
+        <img src="../img/agate.jpg" style="filter: hue-rotate(-20deg);">
+      </div>
+      <div class="uk-card-body uk-text-center">
+        <h3 class="uk-card-title">Agate Badge</h3>
+        <p>Gérez vos horaires</p>
+      </div>
+    </div>
+
+    <div id="agate-card" class="uk-card uk-card-default uk-card-hover uk-animation-slide-right-medium uk-width-medium@s uk-width-large@l">
+      <div class="uk-card-media-top">
+        <img src="../img/agate.jpg" style="filter: hue-rotate(190deg); ">
+      </div>
+      <div class="uk-card-body uk-text-center">
+        <h3 class="uk-card-title">Agate</h3>
+        <p>Gérez vos congés</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const Store = require('electron-store')
+
+    const store = new Store()
+    const unitCode = store.get('unitCode')
+
+    onload = () => {
+      document.getElementById('agate-card').addEventListener('click', event => {
+        window.location.href = './agate.html'
+      })
+
+      document.getElementById('agate-badge-card').addEventListener('click', event => {
+        if (unitCode) {
+          return window.location.href = './agate-badge.html'
+        }
+
+        UIkit.modal.confirm('Pour accéder à Agate Badge, veuillez d\'abord renseigner votre code unité.', {
+          labels: { ok: 'Ouvrir les paramètres', cancel: 'Fermer' }
+        }).then(() => {
+          window.location.href = './settings.html'
+        })
+      })
+    }
+  </script>
+</body>
+</html>

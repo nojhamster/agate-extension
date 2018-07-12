@@ -1,0 +1,53 @@
+{
+  "name": "agate-desktop",
+  "productName": "Agate Desktop",
+  "version": "1.0.5",
+  "description": "Résume votre sitation horaire, sans prise de tête.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder -mwl",
+    "dist:docker": "./dist.sh",
+    "dist:linux": "electron-builder -l",
+    "dist:mac": "electron-builder -m",
+    "dist:windows": "electron-builder -w",
+    "patchversion:bookmark": "sed -i \"s#\\(agate-extension/v\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" bookmark.html",
+    "patchversion:manifest": "sed -i \"s#\\(\\\"version\\\": \\\"\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" extension/manifest.json",
+    "version": "npm run patchversion:bookmark && npm run patchversion:manifest && git add bookmark.html extension/manifest.json"
+  },
+  "repository": "https://github.com/nojhamster/agate-extension",
+  "keywords": [
+    "agate",
+    "electron"
+  ],
+  "author": "Yannick Schurter <yannick.schurter@gmail.com>",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^2.0.4",
+    "electron-builder": "^20.19.2"
+  },
+  "dependencies": {
+    "electron-store": "^2.0.0",
+    "electron-window-state": "^4.1.1",
+    "uikit": "^3.0.0-rc.8"
+  },
+  "build": {
+    "appId": "com.agateb.app",
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "tar.gz"
+    }
+  }
+}

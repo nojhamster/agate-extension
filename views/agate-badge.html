@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+
+  <title>Agate</title>
+  <link rel="stylesheet" href="../node_modules/uikit/dist/css/uikit.min.css">
+  <script src="../node_modules/uikit/dist/js/uikit.min.js"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    #webview {
+      width:100%;
+      height:100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader" hidden uk-spinner="ratio: 3" class="uk-position-cover uk-overlay uk-overlay-default uk-flex uk-flex-center uk-flex-middle"></div>
+  <webview id="webview" preload="../js/preload.js" partition="persist:agate"></webview>
+
+  <script>
+    const Store = require('electron-store')
+    const url = require('url')
+
+    const store = new Store()
+    const unitCode = store.get('unitCode')
+    const userId = store.get('userId')
+    const recapOnStart = store.get('startPage') === 'recap'
+
+
+    onload = () => {
+      const webview = document.getElementById('webview')
+      const loader = document.getElementById('loader')
+
+      webview.addEventListener('new-window', (e) => {
+        webview.loadURL(e.url)
+      })
+      webview.addEventListener('did-start-loading', () => {
+        loader.removeAttribute('hidden')
+      })
+      webview.addEventListener('did-stop-loading', () => {
+        loader.setAttribute('hidden', true)
+      })
+      webview.addEventListener('did-fail-load', () => {
+        UIkit.modal.confirm('Le chargement de la page a échoué. Cela peut être dû à un mauvais paramétrage de votre code unité.', {
+          labels: { ok: 'Recharger', cancel: 'Retour' }
+        }).then(() => {
+          webview.reload()
+        }).catch(() => {
+          if (webview.canGoBack()) {
+            webview.goBack()
+          } else {
+            window.location.href = './index.html'
+          }
+        })
+      })
+
+      if (!unitCode) {
+        return window.location.href = 'index.html'
+      }
+
+      const targetUrl = {
+        protocol: 'https',
+        hostname: `${unitCode}.agateb.cnrs.fr`,
+        pathname: '/index.php',
+        query: {
+          controller: 'Pointage/Calendar',
+          action: 'show',
+          user_id: userId
+        }
+      }
+
+      if (recapOnStart) {
+        const now = new Date()
+        const year = now.getFullYear()
+        let month = now.getMonth() + 1
+        const lastDay = new Date(year, month, 0).getDate()
+
+        if (month < 10) { month = `0${month}` }
+
+        targetUrl.query = {
+          controller: 'Pointage/Feuille',
+          action: 'showTempsTheorique',
+          date_debut:`${year}-${month}-01`,
+          date_fin: `${year}-${month}-${lastDay}`,
+          user_id: userId
+        }
+      }
+
+      webview.src = url.format(targetUrl)
+    }
+  </script>
+</body>
+</html>
