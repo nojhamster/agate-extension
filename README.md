@@ -1,5 +1,7 @@
 # Agate made simple
-Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résumé horaire du mois en cours. Celle-ci contient les métriques suivantes :
+`Agate made simple` est un script qui s'intègre à Agate et ajoute des métriques simplifiées dans le résumé horaire du mois en cours. Celui-ci est disponible sous la forme d'une extension pour navigateur, d'un bookmarklet ou d'une application de bureau.
+
+Les métriques suivantes sont ajoutées au résumé horaire :
 
   - Le temps de travail effectif (somme des badgeages).
   - Le temps de pause.
