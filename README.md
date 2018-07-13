@@ -1,5 +1,6 @@
 # Agate made simple
 Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résumé horaire du mois en cours. Celle-ci contient les métriques suivantes :
+
   - Le temps de travail effectif (somme des badgeages).
   - Le temps de pause.
   - Les régulations, incluant la pause méridienne (sauf en cas de demi-journée).
@@ -30,3 +31,11 @@ Cette extension s'intègre à Agate et ajoute une nouvelle section dans le résu
 ## Alternative : marque-page
 
 Si l'extension n'est pas disponible pour votre navigateur ou ne fonctionne pas correctement, vous pouvez installer [ce bookmarklet](https://cdn.rawgit.com/nojhamster/agate-extension/v1.0.6/bookmark.html). Vous pourrez ensuite l'exécuter depuis votre barre de favoris, après vous être rendus sur la page des horaires mensuels.
+
+# Agate Desktop
+
+Vous pouvez désormais accéder à Agate depuis votre bureau avec l'application **Agate Desktop**. Disponible pour **Windows** et **Linux**, en version installable ou standalone, celle-ci permet d'accéder rapidement à Agate et intègre les fonctionnalités de l'extension. Vous pouvez télécharger la dernière version depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
+
+**Node Bene**:
+L'application Windows n'étant pas signée, une fenêtre Smartscreen peut apparaître au premier lancement. Vous pouvez tout de même l'exécuter en cliquant sur `informations complémentaires`, puis `exécuter quand même`.
+
