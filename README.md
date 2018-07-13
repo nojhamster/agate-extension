@@ -16,7 +16,7 @@ Les métriques suivantes sont ajoutées au résumé horaire :
   - Firefox > 34
   - Edge > 14
 
-# Installation
+# Extension navigateur
 
 ## Chrome
   - Téléchargez le dernier fichier CRX depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
@@ -30,13 +30,13 @@ Les métriques suivantes sont ajoutées au résumé horaire :
   - Ouvrez l'onglet des extensions (menu -> modules -> extensions).
   - Déposez le fichier XPI dans la fenêtre.
 
-## Alternative : marque-page
+# Bookmarklet
 
 Si l'extension n'est pas disponible pour votre navigateur ou ne fonctionne pas correctement, vous pouvez installer [ce bookmarklet](https://cdn.rawgit.com/nojhamster/agate-extension/v1.0.6/bookmark.html). Vous pourrez ensuite l'exécuter depuis votre barre de favoris, après vous être rendus sur la page des horaires mensuels.
 
 # Agate Desktop
 
-Vous pouvez désormais accéder à Agate depuis votre bureau avec l'application **Agate Desktop**. Disponible pour **Windows** et **Linux**, en version installable ou standalone, celle-ci permet d'accéder rapidement à Agate et intègre les fonctionnalités de l'extension. Vous pouvez télécharger la dernière version depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
+Avec l'application **Agate Desktop**, vous pouvez désormais accéder à Agate depuis votre bureau. Disponible pour **Windows** et **Linux**, en version installable ou standalone, celle-ci permet d'accéder rapidement à Agate et intègre les fonctionnalités de l'extension. Vous pouvez télécharger la dernière version depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
 
 **Node Bene**:
 L'application Windows n'étant pas signée, une fenêtre Smartscreen peut apparaître au premier lancement. Vous pouvez tout de même l'exécuter en cliquant sur `informations complémentaires`, puis `exécuter quand même`.
