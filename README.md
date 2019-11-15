@@ -23,7 +23,12 @@ Les métriques suivantes sont ajoutées au résumé horaire :
   - Ouvrez l'onglet des extensions (menu -> plus d'outils -> extensions).
   - Déposez le fichier CRX dans la fenêtre.
 
-**NB:** sous windows, Chrome désactive les extensions ne provenant pas du Web Store à chaque démarrage.
+**NB:** les versions récentes de Chrome refusent d'activer les extensions ne provenant pas du Web Store. Vous pouvez cependant installer l'extension directement depuis le code source.
+  - Téléchargez l'archive zip du code source depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
+  - Décompressez l'archive à l'emplacement de votre choix.
+  - Ouvrez l'onglet des extensions (menu -> plus d'outils -> extensions).
+  - Activez le mode développeur (en haut à droite).
+  - Cliquez sur "Charger l'extension non empaquetée" et sélectionnez le dossier `extension` de l'archive.
 
 ## Firefox
   - Téléchargez le dernier fichier XPI depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
