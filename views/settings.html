@@ -65,23 +65,20 @@
   </div>
 
   <script>
-    const Store = require('electron-store')
-    const store = new Store()
-
     const settingsForm = document.getElementById('settings-form')
     const unitInput    = document.getElementById('unit-code')
     const userInput    = document.getElementById('user-id')
     const startPage    = document.getElementById('start-page')
 
-    unitInput.value = store.get('unitCode') || ''
-    userInput.value = store.get('userId') || ''
-    startPage.value = store.get('startPage') || 'home'
+    unitInput.value = window.store.get('unitCode') || ''
+    userInput.value = window.store.get('userId') || ''
+    startPage.value = window.store.get('startPage') || 'home'
 
     settingsForm.addEventListener('submit', event => {
       event.preventDefault()
-      store.set('unitCode', unitInput.value.toLowerCase())
-      store.set('userId', userInput.value)
-      store.set('startPage', startPage.value)
+      window.store.set('unitCode', unitInput.value.toLowerCase())
+      window.store.set('userId', userInput.value)
+      window.store.set('startPage', startPage.value)
       window.location.href = './index.html'
     })
   </script>

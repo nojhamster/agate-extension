@@ -27,13 +27,9 @@
   <webview id="webview" preload="../js/preload-webview.js" partition="persist:agate"></webview>
 
   <script>
-    const Store = require('electron-store')
-    const url = require('url')
-
-    const store = new Store()
-    const unitCode = store.get('unitCode')
-    const userId = store.get('userId')
-    const recapOnStart = store.get('startPage') === 'recap'
+    const unitCode = window.store.get('unitCode')
+    const userId = window.store.get('userId')
+    const recapOnStart = window.store.get('startPage') === 'recap'
 
 
     onload = () => {
@@ -95,7 +91,7 @@
         }
       }
 
-      webview.src = url.format(targetUrl)
+      webview.src = window.utils.formatUrl(targetUrl)
     }
   </script>
 </body>

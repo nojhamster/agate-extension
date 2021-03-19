@@ -41,10 +41,7 @@
   </div>
 
   <script>
-    const Store = require('electron-store')
-
-    const store = new Store()
-    const unitCode = store.get('unitCode')
+    const unitCode = window.store.get('unitCode')
 
     onload = () => {
       document.getElementById('agate-card').addEventListener('click', event => {

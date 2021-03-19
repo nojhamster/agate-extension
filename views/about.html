@@ -31,14 +31,20 @@
   </div>
 
   <script>
-    const { app } = require('electron').remote
+    async function getAppInfo () {
+      document.getElementById('app-name').textContent = await window.app.getName()
+      document.getElementById('app-version').textContent = await window.app.getVersion()
+    }
 
-    document.getElementById('app-name').textContent = app.getName()
-    document.getElementById('app-version').textContent = app.getVersion()
-    document.getElementById('electron-version').textContent = process.versions.electron
-    document.getElementById('chrome-version').textContent = process.versions.chrome
-    document.getElementById('node-version').textContent = process.versions.node
-    document.getElementById('v8-version').textContent = process.versions.node
+    getAppInfo().catch(err => {
+      console.error(err);
+      console.error('Failed to get app info');
+    });
+
+    document.getElementById('electron-version').textContent = window.app.getElectronVersion();
+    document.getElementById('chrome-version').textContent = window.app.getChromeVersion();
+    document.getElementById('node-version').textContent = window.app.getNodeVersion();
+    document.getElementById('v8-version').textContent = window.app.getV8Version();
   </script>
 </body>
 </html>
