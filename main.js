@@ -38,6 +38,7 @@ function createMainWindow () {
     height: mainWindowState.height,
     title: 'Agate',
     webPreferences: {
+      enableRemoteModule: false,
       preload: path.resolve(__dirname, 'js/preload-main.js'),
     }
   })
