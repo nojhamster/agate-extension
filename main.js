@@ -10,6 +10,8 @@ const path = require('path')
 const Store = require('electron-store')
 const windowStateKeeper = require('electron-window-state');
 
+const store = new Store()
+
 // Workaround to avoid errors when loading over HTTPS
 app.commandLine.appendSwitch('ignore-certificate-errors')
 
