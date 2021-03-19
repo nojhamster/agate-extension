@@ -84,10 +84,9 @@ function createMenu (mainWindow) {
           label: 'Se déconnecter',
           accelerator: 'Ctrl+D',
           click () {
-            clearCasData(err => {
-              if (err) { console.error(err) }
-              loadView('index')
-            })
+            clearCasData()
+              .then(() => { loadView('index') })
+              .catch((err) => { console.error(err) })
           }
         },
         {
@@ -138,9 +137,9 @@ function createMenu (mainWindow) {
 /**
  * Clear CAS cookies, resulting in a disconnection
  */
-function clearCasData (callback) {
+function clearCasData () {
   if (mainWindow) {
-    session.fromPartition('persist:agate').clearStorageData({ storages: ['cookies'] }, callback)
+    return session.fromPartition('persist:agate').clearStorageData({ storages: ['cookies'] })
   }
 }
 
