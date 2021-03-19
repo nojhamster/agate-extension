@@ -147,8 +147,8 @@ function clearCasData () {
 
 function createAboutWindow () {
   const bounds = mainWindow.getBounds()
-  const width = 530
-  const height = 400
+  const width = 400
+  const height = 300
 
   const aboutWindow = new BrowserWindow({
     modal: true,

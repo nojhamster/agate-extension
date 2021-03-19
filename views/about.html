@@ -20,14 +20,24 @@
 </head>
 <body class="uk-light uk-background-secondary">
   <div class="uk-container uk-container-small uk-height-1-1">
-    <h1 id="app-name" class="uk-text-center uk-margin-top"></h1>
-    <ul class="uk-list uk-list-divider">
-      <li>Version : <span id="app-version"></span></li>
-      <li>Electron : <span id="electron-version"></span></li>
-      <li>Chrome : <span id="chrome-version"></span></li>
-      <li>Node.js : <span id="node-version"></span></li>
-      <li>V8 : <span id="v8-version"></span>  </li>
-    </ul>
+    <div class="uk-grid-small uk-flex-middle uk-margin-top" uk-grid>
+      <div class="uk-width-auto">
+        <img class="uk-border-rounded" src="../img/icon-64x64.png" alt="logo">
+      </div>
+      <div class="uk-width-auto">
+          <h3 class="uk-card-title uk-margin-remove-bottom" id="app-name"></h3>
+          <p class="uk-text-meta uk-margin-remove-top">Version <span id="app-version"></span></p>
+      </div>
+    </div>
+
+    <table class="uk-table uk-table-small uk-table-divider">
+      <tbody>
+        <tr><td>Electron</td><td id="electron-version"></td></tr>
+        <tr><td>Chrome</td><td id="chrome-version"></td></tr>
+        <tr><td>Node.js</td><td id="node-version"></td></tr>
+        <tr><td>V8</td><td id="v8-version"></td></tr>
+      </tbody>
+  </table>
   </div>
 
   <script>
