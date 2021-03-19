@@ -129,38 +129,6 @@ function clearCasData (callback) {
   }
 }
 
-/**
- * Change expiration date of CAS cookies
- * That way we can keep the session alive accross app restarts
- */
-function persistCasCookies (callback) {
-  if (!mainWindow) { return callback() }
-
-  const sessionCookies = session.fromPartition('persist:agate').cookies
-  const casUrl = 'https://cas.cnrs.fr/cas/'
-
-  sessionCookies.get({ url: casUrl }, (error, cookies) => {
-    if (error) { return callback(error) }
-
-    (function nextCookie() {
-      const cookie = cookies.pop()
-      if (!cookie) {
-        // Writes any unwritten cookies before leaving
-        return sessionCookies.flushStore(callback)
-      }
-
-      cookie.expirationDate = parseInt(Date.now() / 1000) + (60 * 24 * 30)
-      cookie.url = casUrl
-      delete cookie.session
-
-      sessionCookies.set(cookie, (error) => {
-        if (error) { console.error(error) }
-        nextCookie()
-      })
-    })()
-  })
-}
-
 function createAboutWindow () {
   const bounds = mainWindow.getBounds()
   const width = 530
@@ -190,20 +158,6 @@ function createAboutWindow () {
 app.on('ready', () => {
   createMenu()
   createMainWindow()
-})
-
-let cookiesPersisted = false
-
-app.on('before-quit', event => {
-  if (cookiesPersisted) { return }
-
-  cookiesPersisted = true
-  event.preventDefault()
-
-  persistCasCookies(err => {
-    if (err) { console.error(err) }
-    app.quit()
-  })
 })
 
 // Quit when all windows are closed.
