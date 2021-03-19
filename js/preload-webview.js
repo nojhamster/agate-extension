@@ -4,13 +4,19 @@ if (window.location.host.endsWith('agateb.cnrs.fr')) {
 
 if (window.location.host === 'janus.cnrs.fr') {
   window.addEventListener('load', () => {
-    const username = document.getElementById('username')
-    if (!username) { return; }
+    const usernameInput = document.getElementById('username')
+    const passwordInput = document.getElementById('password')
 
-    username.value = localStorage.getItem('username') || ''
+    if (!usernameInput) { return; }
 
-    username.addEventListener('change', event => {
+    usernameInput.value = localStorage.getItem('username') || ''
+
+    usernameInput.addEventListener('change', event => {
       localStorage.setItem('username', event.target.value)
     })
+
+    if (usernameInput.value && passwordInput) {
+      passwordInput.focus()
+    }
   })
 }
