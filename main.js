@@ -1,10 +1,20 @@
-const { app, Menu, BrowserWindow, session, shell } = require('electron')
+const {
+  app,
+  Menu,
+  BrowserWindow,
+  session,
+  shell,
+  ipcMain,
+} = require('electron')
+const path = require('path')
 const Store = require('electron-store')
-const store = new Store()
 const windowStateKeeper = require('electron-window-state');
 
 // Workaround to avoid errors when loading over HTTPS
 app.commandLine.appendSwitch('ignore-certificate-errors')
+
+ipcMain.handle('get-app-name', () => app.getName())
+ipcMain.handle('get-app-version', () => app.getVersion())
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -24,7 +34,10 @@ function createMainWindow () {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    title: 'Agate'
+    title: 'Agate',
+    webPreferences: {
+      preload: path.resolve(__dirname, 'js/preload-main.js'),
+    }
   })
 
   mainWindowState.manage(mainWindow);
@@ -141,7 +154,10 @@ function createAboutWindow () {
     y: Math.round(bounds.y + bounds.height / 2 - height / 2),
     width,
     height,
-    parent: mainWindow
+    parent: mainWindow,
+    webPreferences: {
+      preload: path.resolve(__dirname, 'js/preload-main.js'),
+    }
   })
 
   aboutWindow.once('ready-to-show', () => {
