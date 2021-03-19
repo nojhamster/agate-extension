@@ -20,6 +20,9 @@
       const webview = document.getElementById('webview')
       const loader = document.getElementById('loader')
 
+      webview.addEventListener('dom-ready', () => {
+        webview.focus()
+      })
       webview.addEventListener('new-window', (e) => {
         webview.loadURL(e.url)
       })
