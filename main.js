@@ -39,6 +39,7 @@ function createMainWindow () {
     title: 'Agate',
     webPreferences: {
       enableRemoteModule: false,
+      webviewTag: true,
       preload: path.resolve(__dirname, 'js/preload-main.js'),
     }
   })
