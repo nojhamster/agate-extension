@@ -23,13 +23,13 @@
   "author": "Yannick Schurter <yannick.schurter@gmail.com>",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^2.0.4",
-    "electron-builder": "^20.19.2"
+    "electron": "^12.0.1",
+    "electron-builder": "^22.10.5"
   },
   "dependencies": {
-    "electron-store": "^2.0.0",
-    "electron-window-state": "^4.1.1",
-    "uikit": "^3.0.0-rc.8"
+    "electron-store": "^7.0.2",
+    "electron-window-state": "^5.0.3",
+    "uikit": "^3.6.18"
   },
   "build": {
     "appId": "com.agateb.app",
