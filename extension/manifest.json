@@ -3,7 +3,7 @@
   "name": "Agate-Badge made simple",
   "description": "Résume votre sitation horaire, sans prise de tête.",
   "author": "Yannick Schurter",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "icons": {
     "16": "icon_16.png",
     "48": "icon_48.png",
