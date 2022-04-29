@@ -1,15 +1,12 @@
 # Agate made simple
-`Agate made simple` est un script qui s'intègre à Agate et ajoute des métriques simplifiées dans le résumé horaire du mois en cours. Celui-ci est disponible sous la forme d'une extension pour navigateur, d'un bookmarklet ou d'une application de bureau.
+`Agate made simple` est un script qui s'intègre à Agate-Tempo pour simplifier l'utilisation de la feuille de temps. Celui-ci est disponible sous la forme d'une extension pour navigateur, d'un bookmarklet et d'une application de bureau.
 
-Les métriques suivantes sont ajoutées au résumé horaire :
+Liste des modifications apportées :
 
-  - Le temps de travail effectif (somme des badgeages).
-  - Le temps de pause.
-  - Les régulations, incluant la pause méridienne (sauf en cas de demi-journée).
-  - Le temps de travail restant.
-  - L'heure de fin de journée prévue.
-  - L'état horaire au jour précédent
-  - L'état horaire actuel
+  - Affichage des pointages directement dans le tableau via un simple clic.
+  - Affichage du temps de travail restant et de l'heure de fin de journée.
+  - Ajout d'un bouton permanent permettant d'accéder facilement à la page de correction des pointages.
+  - Modification de la couleur des lignes pour les jours feriés.
 
 # Navigateurs supportés
   - Chrome > 49

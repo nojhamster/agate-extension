@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Agate-Badge made simple",
   "description": "Résume votre sitation horaire, sans prise de tête.",
   "author": "Yannick Schurter",
@@ -12,7 +12,10 @@
   "update_url": "http://0.0.0.0/",
   "content_scripts": [
     {
-      "matches": ["*://*.agateb.cnrs.fr/index.php*controller=Pointage/Feuille*"],
+      "matches": [
+        "*://agate-tempo.cnrs.fr/*/time/sheet/*/month/*/*",
+        "*://agate-tempo.cnrs.fr/*/time/sheet/*/week/*/*"
+      ],
       "run_at": "document_idle",
       "js": ["content_script.js"]
     }

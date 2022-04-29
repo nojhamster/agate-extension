@@ -8,100 +8,177 @@
   }
 
   function startAgateScript() {
-    if (!document.querySelector('#fiche_pointage .jour_courant')) { return }
+    insertStyles();
 
-    const recap = document.querySelector('#recap_mensuel')
-    if (!recap) { return }
+    const userId = /^\/\w+\/time\/sheet\/(\d+)/.exec(window.location.pathname)?.[1];
 
-    let monthlyDiff  = stringToMinutes(getTextOf('#fiche_pointage tfoot .diff'))
-    let regulation   = stringToMinutes(getTextOf('#fiche_pointage .jour_courant span.regulation'))
-    const dailyTotal = stringToMinutes(getTextOf('#fiche_pointage .jour_courant .champs_temps_theorique'))
-    const dailyBreak = stringToMinutes(getTextOf('#fiche_pointage .jour_courant .champs_pause'))
-    const transfered = stringToMinutes(getTransferedTime())
-    const clockings  = getClockings()
+    document
+      .querySelectorAll('tr.work:not(.notworkedTr)')
+      .forEach((workRow) => {
+        const cell = workRow.querySelector('.hourButton')?.parentElement || workRow.querySelector('td:nth-child(3)');
+        const infoButton = document.createElement('button');
 
-    monthlyDiff += transfered
+        infoButton.classList.add('btn', 'ams-btn', 'ams-float-right', 'ams-ml-4');
+        infoButton.setAttribute('title', 'Plus d\'informations');
+        infoButton.innerHTML = '<i class="fa fa-info"></i>';
+        infoButton.addEventListener('click', () => {
+          summerize(workRow).catch((e) => {
+            console.error('Failed to summerize row');
+            console.error(e);
+          });
+        });
 
-    const msToMin      = 60000
-    const minBreakTime = 45
-    const breakTaken   = (dailyBreak > 0)
-    const halfDay      = (regulation > 225)
+        const checkClockingsButton = document.createElement('a');
 
-    if (!halfDay && dailyBreak < minBreakTime) {
-      // If the break time lasted less than 45min, remove every minute under 45 from the regulation
-      // If it's a half day (regulation > 3h45), we don't need to regulate the break time
-      regulation += (dailyBreak - minBreakTime)
+        const rowDate = /td-(\d+-\d+-\d+)/.exec(workRow.getAttribute('id'))?.[1];
+
+        checkClockingsButton.classList.add('btn', 'ams-btn', 'ams-float-right', 'ams-ml-4');
+        checkClockingsButton.setAttribute('href', getPunchUrl(rowDate));
+        checkClockingsButton.setAttribute('title', 'Voir les pointages du jour');
+        checkClockingsButton.innerHTML = '<i class="fa fa-history fa-lg"></i>';
+
+        cell.appendChild(checkClockingsButton);
+        cell.appendChild(infoButton);
+
+        if (workRow.classList.contains('trToday')) {
+          summerize(workRow).catch((e) => {
+            console.error('Failed to summerize row');
+            console.error(e);
+          });
+        }
+      });
+
+    async function summerize(workRow) {
+      const clockingsCell = workRow.querySelector('.hourButton')?.parentElement || workRow.querySelector('td:nth-child(3)');
+
+      if (!clockingsCell) { return; }
+
+      let summary = clockingsCell.querySelector('.ams-summary');
+
+      if (!summary) {
+        summary = document.createElement('div');
+        summary.classList.add('ams-summary', 'ams-float-right');
+        clockingsCell.appendChild(summary);
+      }
+
+      summary.innerHTML = '';
+
+      const rowDate = /td-(\d+-\d+-\d+)/.exec(workRow.getAttribute('id'))?.[1];
+
+      const spinnerButton = createSpinnerButton();
+      summary.appendChild(spinnerButton);
+
+      let clockings;
+      try {
+        clockings = await getClockings(rowDate);
+      } catch (e) {
+        console.error('Failed to download clockings of current date');
+        console.error(e);
+      } finally {
+        summary.removeChild(spinnerButton);
+      }
+
+      clockings.forEach((clocking) => {
+        summary.appendChild(createClockingButton(clocking));
+      });
+
+      // We only need to calculate the end of day for the current date
+      if (!workRow.classList.contains('trToday')) {
+        return;
+      }
+
+      const dailyTotal = stringToMinutes(workRow.querySelector('.theoricalColumn')?.textContent);
+
+      let regulation = 0;
+      let breakTime = 0;
+
+      workRow
+        .querySelectorAll('.hourButton.withoutValidation')
+        .forEach((item) => {
+          if (item.querySelector('i.fa-cutlery')) {
+            breakTime += stringToMinutes(item?.textContent);
+          } else {
+            regulation += stringToMinutes(item?.textContent);
+          }
+        });
+
+      const minBreakTime = 45;
+      const halfDay = (regulation > 225);
+
+      if (!halfDay && breakTime === 0) {
+        // If there are no break time, use the time between the two first clocking ranges
+        // If it's a half day (regulation > 3h45), we don't need to regulate the break time
+
+        if (clockings.length >= 2) {
+          breakTime = (clockings[1]?.clockIn - clockings[0]?.clockOut) || 0;
+        }
+        regulation += (breakTime - minBreakTime);
+      }
+
+      const remainingButton = document.createElement('button');
+      remainingButton.classList.add('btn', 'ams-btn');
+      remainingButton.setAttribute('title', 'Temps de travail restant');
+      remainingButton.innerHTML = `
+        <i class="fa fa-clock-o"></i>
+        <span class="text"></span>
+      `;
+
+      const endOfDayButton = document.createElement('button');
+      endOfDayButton.classList.add('btn', 'ams-btn');
+      endOfDayButton.setAttribute('title', 'Fin de la journée');
+      endOfDayButton.innerHTML = `
+        <i class="fa fa-flag-checkered"></i>
+        <span class="text"></span>
+      `;
+
+      const minToMs   = 60000;
+      const worktime  = getWorktime(clockings);
+      const remaining = dailyTotal - worktime - regulation;
+      const endOfDay  = new Date(Date.now() + remaining * minToMs);
+
+      remainingButton.querySelector('.text').textContent = minutesToString(remaining);
+      endOfDayButton.querySelector('.text').textContent = dateToString(endOfDay);
+
+      summary.appendChild(remainingButton);
+      summary.appendChild(endOfDayButton);
     }
 
-    const metricsBody = document.createElement('tbody')
+    function createSpinnerButton() {
+      const spinnerButton = document.createElement('button');
+      spinnerButton.classList.add('btn', 'ams-btn');
+      spinnerButton.setAttribute('title', 'Chargement...');
+      spinnerButton.innerHTML = '<i class="fa fa-pulse fa-spinner"></i>';
+      return spinnerButton;
+    }
 
-    metricsBody.innerHTML = `
-      <tr class="head">
-        <td colspan="2">En bref</td>
-      </tr>
-      <tr>
-        <td class="libelle">Temps de travail</td>
-        <td id="as-worktime"></td>
-      </tr>
-      <tr>
-        <td class="libelle">Temps de pause</td>
-        <td id="as-breaktime"></td>
-      </tr>
-      <tr>
-        <td class="libelle">Régulations</td>
-        <td id="as-regulation"></td>
-      </tr>
-      <tr style="border-top: 1px solid grey">
-        <td class="libelle">Reste à faire</td>
-        <td id="as-remaining"></td>
-      </tr>
-      <tr>
-        <td class="libelle">Fin de la journée</td>
-        <td id="as-endofday"></td>
-      </tr>
-      <tr style="border-top: 1px solid grey">
-        <td class="libelle">Etat horaire J-1</td>
-        <td id="as-mdiff"></td>
-      </tr>
-      <tr>
-        <td class="libelle">Etat horaire actuel</td>
-        <td id="as-cdiff"></td>
-      </tr>
-    `
+    function createClockingButton({ clockIn, clockOut }) {
+      let clockRange = 0;
 
-    recap.appendChild(metricsBody)
-    updateMetrics()
+      if (clockIn && clockOut) {
+        clockRange = clockOut - clockIn;
+      } else if (clockIn) {
+        const now = new Date()
+        clockRange = (now.getHours() * 60) + now.getMinutes() - clockIn;
+      }
 
-    /**
-     * Calculate all dynamic values and update DOM
-     */
-    function updateMetrics () {
-      const worktime    = getWorktime()
-      const remaining   = dailyTotal - worktime - regulation
-      const currentDiff = monthlyDiff - remaining
-      const endOfDay    = new Date(Date.now() + remaining * msToMin)
-
-      const borderTop = { 'border-top': '1px solid grey' }
-
-      document.getElementById('as-worktime').textContent   = minutesToString(worktime)
-      document.getElementById('as-breaktime').textContent  = minutesToString(dailyBreak)
-      document.getElementById('as-regulation').textContent = minutesToString(regulation)
-      document.getElementById('as-remaining').textContent  = minutesToString(remaining)
-      document.getElementById('as-endofday').textContent   = dateToString(endOfDay)
-      document.getElementById('as-mdiff').textContent      = minutesToString(monthlyDiff)
-      document.getElementById('as-cdiff').textContent      = minutesToString(currentDiff)
-
-      // Update metrics every 15s
-      setTimeout(updateMetrics, 15000)
+      const button = document.createElement('button');
+      button.classList.add('btn', 'ams-btn-primary');
+      button.setAttribute('title', minutesToString(clockRange));
+      button.innerHTML = `
+        ${clockIn ? minutesToString(clockIn) : '...'}
+        <i class="fa fa-angle-right"></i>
+        ${clockOut ? minutesToString(clockOut) : '...'}
+      `;
+      return button;
     }
 
     /**
      * Get the total worktime based on clockings
      */
-    function getWorktime () {
+    function getWorktime (clockings) {
       let worktime = 0
 
-      if (clockings.length > 0) {
+      if (Array.isArray(clockings) && clockings.length > 0) {
         clockings.forEach(({ clockIn, clockOut }) => {
           if (clockIn && clockOut) {
             // For each clock-in/clock-out couple, add the period to the work time
@@ -118,61 +195,11 @@
     }
 
     /**
-     * Get the clockings of the current day
-     */
-    function getClockings () {
-      const clockings = document.querySelectorAll('#fiche_pointage .jour_courant .couple_pointage')
-
-      return Array.from(clockings || []).map(clocking => {
-        const clockIn = parseFloat(clocking.getAttribute('data-entree'))
-        const clockOut = parseFloat(clocking.getAttribute('data-sortie'))
-
-        return {
-          clockIn: isNaN(clockIn) ? null : clockIn,
-          clockOut: isNaN(clockOut) ? null : clockOut
-        }
-      })
-    }
-
-    /**
-     * Get work time transfered from the previous month
-     */
-    function getTransferedTime () {
-      const recap = document.querySelectorAll('#recap_mensuel td')
-
-      for (let i = 0; i < recap.length; i++) {
-        if (/report/i.test(recap[i].textContent)) {
-          const nextCell = recap[i + 1]
-          return nextCell && nextCell.textContent
-        }
-      }
-    }
-
-    /**
-     * Return the text content of a selector
-     * @param {String} selector
-     */
-    function getTextOf (selector) {
-      const element = document.querySelector(selector)
-      const content = (element && element.textContent) || ''
-      return content.trim()
-    }
-
-    /**
-     * Return the number of minutes from midnight
-     */
-    function minutesFromMidnight () {
-      const now = new Date()
-      return (now.getHours() * 60) + now.getMinutes()
-    }
-
-    /**
      * Convert a string (..h.. or -..h..) into a number of minutes
      * @param {String} str
      */
     function stringToMinutes (str) {
-      str = (str || '').trim()
-      const match = /^(-)?(\d+)h(\d+)$/.exec(str)
+      const match = /^(-)?\s*(\d+)[h:](\d+)$/.exec((str || '').trim())
       if (!match) { return 0 }
 
       const minutes = (parseInt(match[2]) * 60) + parseInt(match[3])
@@ -187,11 +214,8 @@
     function minutesToString (nbMinutes) {
       if (!nbMinutes && nbMinutes !== 0) { return 'N/A' }
 
-      let hours = Math.floor(Math.abs(nbMinutes / 60))
-      let minutes = Math.abs(nbMinutes % 60)
-
-      if (hours < 10) { hours = `0${hours}` }
-      if (minutes < 10) { minutes = `0${minutes}` }
+      let hours = Math.floor(Math.abs(nbMinutes / 60)).toString().padStart(2, '0');
+      let minutes = Math.abs(nbMinutes % 60).toString().padStart(2, '0');
 
       return nbMinutes >= 0 ? `${hours}h${minutes}` : `-${hours}h${minutes}`
     }
@@ -200,16 +224,83 @@
      * Take a date and return a formated string (..h.. or -..h..)
      * @param {Integer} date
      */
-    function dateToString (date) {
-      if (!date) { return 'N/A' }
+    function dateToString(date) {
+      if (!date) { return 'N/A'; }
 
-      let hours = date.getHours()
-      let minutes = date.getMinutes()
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
 
-      if (hours < 10) { hours = `0${hours}` }
-      if (minutes < 10) { minutes = `0${minutes}` }
+      return `${hours}h${minutes}`;
+    }
 
-      return `${hours}h${minutes}`
+    function getPunchUrl(date) {
+      return `/fr/time/punch/${userId}/${date}`;
+    }
+
+    /**
+     * Get clockings of the given date
+     */
+    function getClockings(date) {
+      return fetch(getPunchUrl(date))
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+          return response.text();
+        })
+        .then((text) => {
+          const parser = new DOMParser();
+          const clockingPage = parser.parseFromString(text, 'text/html');
+          const clockings = [];
+
+          const inputs = clockingPage.querySelectorAll('#punches_collection tr:not(.tr-punch-canceled) input[type=time]');
+
+          for (let i = 0; i < inputs.length; i += 2) {
+            clockings.push({
+              clockIn: stringToMinutes(inputs[i]?.value),
+              clockOut: stringToMinutes(inputs[i + 1]?.value),
+            });
+          }
+
+          return clockings;
+        });
+    }
+
+    /**
+     * Insert extension specific styles in the document head
+     */
+    function insertStyles() {
+      const style = document.createElement('style');
+
+      style.textContent = `
+        .ams-float-right
+        {
+          float: right;
+        }
+
+        .ams-summary > button,
+        .ams-ml-4
+        {
+          margin-left: 4px;
+        }
+
+        .ams-btn {
+          background-color: transparent;
+          color: #444;
+          border-color: #AAA;
+          min-width: 30px;
+        }
+        .ams-btn-primary {
+          background-color: transparent;
+          color: #4583aa;
+          border-color: #4583aa;
+        }
+        .bankHolidayTr {
+          background: repeating-linear-gradient(45deg, #ffe7b8, #ffe7b8 10px, #ffffff 10px, #ffffff 20px);
+        }
+      `;
+
+      document.head.appendChild(style);
     }
   }
 })()
