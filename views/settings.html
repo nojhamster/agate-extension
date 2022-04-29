@@ -29,30 +29,39 @@
       </div>
 
       <div class="uk-card-body">
-        <form id="settings-form" action="#">
+        <form class="uk-form-stacked" id="settings-form" action="#">
           <div class="uk-margin">
-            <label class="uk-form-label" for="unit-code">Code unité <span class="uk-text-muted">(https://<strong>ups76-1</strong>.agateb.cnrs.fr)</span></label>
-            <div class="uk-form-controls">
-              <input id="unit-code" class="uk-input" type="text" placeholder="Ex: ups76-1" autofocus>
-            </div>
-          </div>
-
-          <div class="uk-margin">
-            <label class="uk-form-label" for="user-id">Identifiant utilisateur <span class="uk-text-muted">(/index.php?user_id=<strong>2529</strong>)</span></label>
+            <label class="uk-form-label" for="user-id">Identifiant utilisateur</label>
             <div class="uk-form-controls">
               <input id="user-id" class="uk-input" type="text" placeholder="Ex: 2529">
             </div>
           </div>
 
+          <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+            <div class="uk-form-controls">
+              <label>
+                <input id="user-id-auto-update" class="uk-checkbox" type="checkbox">
+                Synchronisation de l'identifiant
+              </label>
+              <div class="uk-text-meta">
+                Si cette case est cochée, votre identifiant sera automatiquement détecté et mis à jour lorsque vous naviguerez dans l'application.
+              </div>
+            </div>
+          </div>
+
           <div class="uk-margin">
-            <label class="uk-form-label" for="start-page">Démarrer l'application sur</label>
-            <select id="start-page" class="uk-select">
-              <option value="home">Accueil</option>
-              <option value="agate">Agate congés</option>
-              <option value="agate-badge">Agate badge</option>
-              <option value="recap">Agate badge - feuille mensuelle *</option>
-            </select>
-            <p class="uk-text-meta">* Le démarrage sur la feuille mensuelle nécessite votre identifiant utilisateur.</p>
+            <div class="uk-form-controls">
+              <label class="uk-form-label" for="start-page">Démarrer l'application sur</label>
+
+              <select id="start-page" class="uk-select">
+                <option value="home">Accueil</option>
+                <option value="planning">Planning</option>
+                <option value="timesheet-month">Feuille horaire mensuelle *</option>
+                <option value="leave-balance">Solde congés *</option>
+                <option value="leave-calendar">Calendrier congés *</option>
+              </select>
+            </div>
+            <p class="uk-text-meta">* Nécessite votre identifiant utilisateur.</p>
           </div>
         </form>
       </div>
@@ -66,17 +75,17 @@
 
   <script>
     const settingsForm = document.getElementById('settings-form')
-    const unitInput    = document.getElementById('unit-code')
-    const userInput    = document.getElementById('user-id')
-    const startPage    = document.getElementById('start-page')
+    const userInput = document.getElementById('user-id')
+    const userAutoUpdateInput = document.getElementById('user-id-auto-update')
+    const startPage = document.getElementById('start-page')
 
-    unitInput.value = window.store.get('unitCode') || ''
+    userAutoUpdateInput.checked = window.store.get('userIdAutoUpdate') !== false
     userInput.value = window.store.get('userId') || ''
     startPage.value = window.store.get('startPage') || 'home'
 
     settingsForm.addEventListener('submit', event => {
       event.preventDefault()
-      window.store.set('unitCode', unitInput.value.toLowerCase())
+      window.store.set('userIdAutoUpdate', userAutoUpdateInput.checked)
       window.store.set('userId', userInput.value)
       window.store.set('startPage', startPage.value)
       window.location.href = './index.html'

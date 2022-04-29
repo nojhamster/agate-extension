@@ -1,4 +1,4 @@
-if (window.location.host.endsWith('agateb.cnrs.fr')) {
+if (window.location.host === 'agate-tempo.cnrs.fr') {
   require('../extension/content_script.js')
 }
 

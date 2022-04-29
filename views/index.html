@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="uk-height-1-1">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,57 +8,92 @@
 
   <title>Agate</title>
   <link rel="stylesheet" href="../node_modules/uikit/dist/css/uikit.min.css">
+  <link rel="stylesheet" href="../css/webview.css">
   <script src="../node_modules/uikit/dist/js/uikit.min.js"></script>
-
-  <style>
-    body {
-      background: linear-gradient(90deg, #76afa6 50%, #e7aa94 50%);
-    }
-    .uk-card { cursor: pointer; }
-  </style>
 </head>
-<body class="uk-height-1-1">
-  <div class="uk-container uk-container-large uk-height-1-1 uk-flex uk-flex-center uk-flex-middle uk-flex-around">
-    <div id="agate-badge-card" class="uk-card uk-card-default uk-card-hover uk-animation-slide-left-medium uk-width-medium@s uk-width-large@l">
-      <div class="uk-card-media-top">
-        <img src="../img/agate.jpg" style="filter: hue-rotate(-20deg);">
-      </div>
-      <div class="uk-card-body uk-text-center">
-        <h3 class="uk-card-title">Agate Badge</h3>
-        <p>Gérez vos horaires</p>
-      </div>
-    </div>
-
-    <div id="agate-card" class="uk-card uk-card-default uk-card-hover uk-animation-slide-right-medium uk-width-medium@s uk-width-large@l">
-      <div class="uk-card-media-top">
-        <img src="../img/agate.jpg" style="filter: hue-rotate(190deg); ">
-      </div>
-      <div class="uk-card-body uk-text-center">
-        <h3 class="uk-card-title">Agate</h3>
-        <p>Gérez vos congés</p>
-      </div>
-    </div>
-  </div>
+<body>
+  <div id="loader" hidden uk-spinner="ratio: 3" class="uk-position-cover uk-overlay uk-overlay-default uk-flex uk-flex-center uk-flex-middle"></div>
+  <webview id="webview" preload="../js/preload-webview.js" partition="persist:agate"></webview>
 
   <script>
-    const unitCode = window.store.get('unitCode')
+    const autoUpdateUserId = window.store.get('userIdAutoUpdate')
+    const userId = window.store.get('userId')
+    const startPage = window.store.get('startPage')
 
     onload = () => {
-      document.getElementById('agate-card').addEventListener('click', event => {
-        window.location.href = './agate.html'
+      const webview = document.getElementById('webview')
+      const loader = document.getElementById('loader')
+
+      webview.addEventListener('dom-ready', () => {
+        webview.focus()
       })
-
-      document.getElementById('agate-badge-card').addEventListener('click', event => {
-        if (unitCode) {
-          return window.location.href = './agate-badge.html'
-        }
-
-        UIkit.modal.confirm('Pour accéder à Agate Badge, veuillez d\'abord renseigner votre code unité.', {
-          labels: { ok: 'Ouvrir les paramètres', cancel: 'Fermer' }
+      webview.addEventListener('new-window', (e) => {
+        webview.loadURL(e.url)
+      })
+      webview.addEventListener('did-start-loading', () => {
+        loader.removeAttribute('hidden')
+      })
+      webview.addEventListener('did-stop-loading', () => {
+        loader.setAttribute('hidden', true)
+      })
+      webview.addEventListener('did-fail-load', () => {
+        UIkit.modal.confirm('Le chargement de la page a échoué.', {
+          labels: { ok: 'Recharger', cancel: 'Retour' }
         }).then(() => {
-          window.location.href = './settings.html'
+          webview.reload()
+        }).catch(() => {
+          if (webview.canGoBack()) {
+            webview.goBack()
+          } else {
+            window.location.href = './index.html'
+          }
         })
       })
+
+      if (autoUpdateUserId) {
+        webview.addEventListener('will-navigate', (e) => {
+          if (!e?.url?.includes('agate-tempo')) { return; }
+
+          const id = /\/time\/sheet\/([0-9]+)/i.exec(e?.url)?.[1]
+            || /\/hrfile\/personnel_file\/([0-9]+)/i.exec(e?.url)?.[1]
+            || /\/absence\/homeoffice\/history\/([0-9]+)/i.exec(e?.url)?.[1]
+            || /\/absence\/(?:calendar\/)?([0-9]+)/i.exec(e?.url)?.[1]
+            || /\/absence\/daysdonation\/(?:donation\/)?([0-9]+)/i.exec(e?.url)?.[1];
+
+          if (id && id !== userId) {
+            window.store.set('userId', id)
+          }
+        })
+      }
+
+      const baseUrl = 'https://agate-tempo.cnrs.fr/fr';
+      let targetUrl;
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+
+      switch (startPage) {
+        case 'planning':
+          targetUrl = `${baseUrl}/planning`;
+          break;
+        case 'timesheet-month':
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = (now.getMonth() + 1).toString().padStart(2, '0');
+          targetUrl = `${baseUrl}/time/sheet/${userId}/month/${year}/${month}`;
+          break;
+        case 'leave-balance':
+          targetUrl = `${baseUrl}/absence/${userId}`;
+          break;
+        case 'leave-calendar':
+          targetUrl = `${baseUrl}/absence/calendar/${userId}`;
+          break;
+        default:
+          targetUrl = baseUrl;
+      }
+
+      webview.src = window.utils.formatUrl(targetUrl)
     }
   </script>
 </body>

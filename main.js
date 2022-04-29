@@ -46,18 +46,7 @@ function createMainWindow () {
 
   mainWindowState.manage(mainWindow);
 
-  switch (startPage) {
-    case 'agate':
-      loadView('agate')
-      break;
-    case 'agate-badge':
-    case 'recap':
-      loadView('agate-badge')
-      break;
-    default:
-      loadView('index')
-  }
-
+  loadView('index');
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
