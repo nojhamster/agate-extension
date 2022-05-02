@@ -91,23 +91,30 @@
 
       let regulation = 0;
       let breakTime = 0;
+      let leaveTaken = false;
 
       workRow
-        .querySelectorAll('.hourButton.withoutValidation')
+        .querySelectorAll('.hourButton')
         .forEach((item) => {
           if (item.querySelector('i.fa-cutlery')) {
             breakTime += stringToMinutes(item?.textContent);
-          } else {
+            return;
+          }
+          if (item.querySelector('i.icon-os-absence')) {
+            leaveTaken = true;
+            regulation += stringToMinutes(item?.textContent);
+            return;
+          }
+          if (item.classList.contains('withoutValidation')) {
             regulation += stringToMinutes(item?.textContent);
           }
         });
 
       const minBreakTime = 45;
-      const halfDay = (regulation > 225);
 
-      if (!halfDay && breakTime === 0) {
+      if (!leaveTaken && breakTime === 0) {
         // If there are no break time, use the time between the two first clocking ranges
-        // If it's a half day (regulation > 3h45), we don't need to regulate the break time
+        // If a leave has been taken, we don't need to regulate the break time
 
         if (clockings.length >= 2) {
           breakTime = (clockings[1]?.clockIn - clockings[0]?.clockOut) || 0;
