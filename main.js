@@ -23,7 +23,6 @@ ipcMain.handle('get-app-version', () => app.getVersion())
 let mainWindow
 
 function createMainWindow () {
-  const startPage = store.get('startPage')
   const mainWindowState = windowStateKeeper({
     defaultWidth: 1000,
     defaultHeight: 800
@@ -61,7 +60,7 @@ function loadView (name) {
   mainWindow.loadFile(`views/${name}.html`)
 }
 
-function createMenu (mainWindow) {
+function createMenu () {
   const menu = Menu.buildFromTemplate([
     {
       label: 'Application',
@@ -87,6 +86,42 @@ function createMenu (mainWindow) {
         },
         { type: 'separator' },
         { role: 'quit', label: 'Quitter' }
+      ]
+    },
+    {
+      label: 'Navigation',
+      submenu: [
+        {
+          label: 'Précédent',
+          accelerator: 'Alt+Left',
+          click () { mainWindow.webContents.send('goBack') }
+        },
+        {
+          label: 'Suivant',
+          accelerator: 'Alt+Right',
+          click () { mainWindow.webContents.send('goForward') }
+        },
+        { type: 'separator' },
+        {
+          label: 'Feuille mensuelle',
+          accelerator: 'Ctrl+U',
+          click () { mainWindow.webContents.send('loadPage', 'timesheet-month') }
+        },
+        {
+          label: 'Solde congés',
+          accelerator: 'Ctrl+I',
+          click () { mainWindow.webContents.send('loadPage', 'leave-balance') }
+        },
+        {
+          label: 'Calendrier congés',
+          accelerator: 'Ctrl+O',
+          click () { mainWindow.webContents.send('loadPage', 'leave-balance') }
+        },
+        {
+          label: 'Planning',
+          accelerator: 'Ctrl+P',
+          click () { mainWindow.webContents.send('loadPage', 'planning') }
+        },
       ]
     },
     {

@@ -20,6 +20,47 @@
     const userId = window.store.get('userId')
     const startPage = window.store.get('startPage')
 
+    window.utils.onMenuNavigation((page) => {
+      loadPage(page);
+    });
+    window.utils.onGoBack(() => {
+      if (webview.canGoBack()) { webview.goBack() }
+    });
+    window.utils.onGoForward(() => {
+      if (webview.canGoForward()) { webview.goForward() }
+    });
+
+    function loadPage(page) {
+      const baseUrl = 'https://agate-tempo.cnrs.fr/fr';
+      let targetUrl;
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+
+      switch (page) {
+        case 'planning':
+          targetUrl = `${baseUrl}/planning`;
+          break;
+        case 'timesheet-month':
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = (now.getMonth() + 1).toString().padStart(2, '0');
+          targetUrl = `${baseUrl}/time/sheet/${userId}/month/${year}/${month}`;
+          break;
+        case 'leave-balance':
+          targetUrl = `${baseUrl}/absence/${userId}`;
+          break;
+        case 'leave-calendar':
+          targetUrl = `${baseUrl}/absence/calendar/${userId}`;
+          break;
+        default:
+          targetUrl = baseUrl;
+      }
+
+      webview.src = window.utils.formatUrl(targetUrl);
+    }
+
     onload = () => {
       const webview = document.getElementById('webview')
       const loader = document.getElementById('loader')
@@ -66,34 +107,7 @@
         })
       }
 
-      const baseUrl = 'https://agate-tempo.cnrs.fr/fr';
-      let targetUrl;
-
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = (now.getMonth() + 1).toString().padStart(2, '0');
-
-      switch (startPage) {
-        case 'planning':
-          targetUrl = `${baseUrl}/planning`;
-          break;
-        case 'timesheet-month':
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = (now.getMonth() + 1).toString().padStart(2, '0');
-          targetUrl = `${baseUrl}/time/sheet/${userId}/month/${year}/${month}`;
-          break;
-        case 'leave-balance':
-          targetUrl = `${baseUrl}/absence/${userId}`;
-          break;
-        case 'leave-calendar':
-          targetUrl = `${baseUrl}/absence/calendar/${userId}`;
-          break;
-        default:
-          targetUrl = baseUrl;
-      }
-
-      webview.src = window.utils.formatUrl(targetUrl)
+      loadPage(startPage);
     }
   </script>
 </body>

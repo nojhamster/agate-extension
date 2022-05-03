@@ -12,7 +12,16 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
   'utils', {
-    formatUrl(opts) { return url.format(opts); }
+    formatUrl(opts) { return url.format(opts); },
+    onMenuNavigation(fn) {
+      ipcRenderer.on('loadPage', (evt, page) => { fn(page); })
+    },
+    onGoBack(fn) {
+      ipcRenderer.on('goBack', () => { fn(); })
+    },
+    onGoForward(fn) {
+      ipcRenderer.on('goForward', () => { fn(); })
+    },
   }
 )
 
