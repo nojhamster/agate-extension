@@ -78,9 +78,11 @@
         summary.removeChild(spinnerButton);
       }
 
-      clockings.forEach((clocking) => {
-        summary.appendChild(createClockingButton(clocking));
-      });
+      if (Array.isArray(clockings)) {
+        clockings.forEach((clocking) => {
+          summary.appendChild(createClockingButton(clocking));
+        });
+      }
 
       // We only need to calculate the end of day for the current date
       if (!workRow.classList.contains('trToday')) {
