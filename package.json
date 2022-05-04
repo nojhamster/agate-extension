@@ -1,7 +1,7 @@
 {
   "name": "agate-desktop",
   "productName": "Agate Desktop",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Résume votre sitation horaire, sans prise de tête.",
   "main": "main.js",
   "scripts": {
