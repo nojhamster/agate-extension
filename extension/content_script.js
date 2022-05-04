@@ -243,7 +243,7 @@
     }
 
     function getPunchUrl(date) {
-      return `/fr/time/punch/${userId}/${date}`;
+      return `${window.location.origin}/fr/time/punch/${userId}/${date}`;
     }
 
     /**
