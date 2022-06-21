@@ -150,6 +150,35 @@
 
       summary.appendChild(remainingButton);
       summary.appendChild(endOfDayButton);
+
+      let overtimeBalance = 0;
+      try {
+        overtimeBalance = await getOvertimeBalance();
+      } catch (e) {
+        console.error('Failed to download overtime balances');
+        console.error(e);
+      }
+
+      if (overtimeBalance !== 0) {
+        let weeklyDifference = 0;
+        try {
+          weeklyDifference = await getWeeklyDifference();
+        } catch (e) {
+          console.error('Failed to download weekly differences');
+          console.error(e);
+        }
+
+        const overTimeButton = document.createElement('button');
+        overTimeButton.classList.add('btn', 'ams-btn');
+        overTimeButton.setAttribute('title', 'Heure(s) supplémentaire(s)');
+        overTimeButton.innerHTML = `
+          <i class="fa fa-${(overtimeBalance + weeklyDifference) > 0 ? 'plus' : 'minus'}"></i>
+          <span class="text"></span>
+        `;
+
+        overTimeButton.querySelector('.text').textContent = minutesToString(overtimeBalance + weeklyDifference);
+        summary.appendChild(overTimeButton);
+      }
     }
 
     function createSpinnerButton() {
@@ -208,7 +237,7 @@
      * @param {String} str
      */
     function stringToMinutes (str) {
-      const match = /^(-)?\s*(\d+)[h:](\d+)$/.exec((str || '').trim())
+      const match = /^(-)?\s*(\d+)\s*[h:]\s*(\d+)/.exec((str || '').trim())
       if (!match) { return 0 }
 
       const minutes = (parseInt(match[2]) * 60) + parseInt(match[3])
@@ -273,6 +302,74 @@
 
           return clockings;
         });
+    }
+
+    function getAbsenceUrl() {
+      return `${window.location.origin}/fr/absence/${userId}`;
+    }
+
+    /**
+     * Get overtime balance
+     */
+    function getOvertimeBalance() {
+      return fetch(getAbsenceUrl())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((text) => {
+        const parser = new DOMParser();
+        const absencePage = parser.parseFromString(text, 'text/html');
+
+        const rows = absencePage.querySelectorAll('#userTypesAbsences .ListAbsenceTBody .entete_config');
+        const overtimeRows = Array.from(rows)
+          .filter((r) => /^récupération\shoraire\s[0-9]{4}$/i.test(r.innerText.trim()));
+        const overtimeBalances = overtimeRows.map((row) => row.parentNode.querySelector('#solde').innerText.trim());
+
+        return overtimeBalances
+          .map((balance) => stringToMinutes(balance))
+          .reduce((acc, balance) => (acc + balance), 0);
+      });
+    }
+
+    function getWeeklyDifference() {
+      return fetch(window.location.href)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((text) => {
+        const parser = new DOMParser();
+        const sheetPage = parser.parseFromString(text, 'text/html');
+
+        const rows = sheetPage.querySelectorAll('table tbody tr.summaryTr');
+
+        const differences = [];
+
+        Array.from(rows).forEach((tr) => {
+          Array.from(tr.childNodes).forEach((td) => {
+            if (td.innerText && /^différentiel\shebdomadaire|compensation\stemps$/i.test(td.innerText.trim())) {
+              if (td.nextElementSibling && td.nextElementSibling.innerText) {
+                differences.push(stringToMinutes(td.nextElementSibling.innerText));
+              }
+            }
+          })
+        });
+
+        const prevDay = sheetPage.querySelector('.trToday').previousElementSibling;
+        const prevDayDiffrence = Array.from(prevDay.querySelectorAll('td')).pop();
+        if (prevDayDiffrence && prevDayDiffrence.innerText) {
+          differences.unshift(stringToMinutes(prevDayDiffrence.innerText.trim()));
+        }
+
+        return differences
+          .slice(0, -1)
+          .reduce((acc, difference) => (acc + difference), 0);
+      });
     }
 
     /**
