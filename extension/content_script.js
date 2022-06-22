@@ -325,8 +325,8 @@
 
         const rows = absencePage.querySelectorAll('#userTypesAbsences .ListAbsenceTBody .entete_config');
         const overtimeRows = Array.from(rows)
-          .filter((r) => /^récupération\shoraire\s[0-9]{4}$/i.test(r.innerText.trim()));
-        const overtimeBalances = overtimeRows.map((row) => row.parentNode.querySelector('#solde').innerText.trim());
+          .filter((r) => /^récupération\shoraire\s[0-9]{4}$/i.test(r.textContent.trim()));
+        const overtimeBalances = overtimeRows.map((row) => row.parentNode.querySelector('#solde').textContent.trim());
 
         return overtimeBalances
           .map((balance) => stringToMinutes(balance))
@@ -352,18 +352,24 @@
 
         Array.from(rows).forEach((tr) => {
           Array.from(tr.childNodes).forEach((td) => {
-            if (td.innerText && /^différentiel\shebdomadaire|compensation\stemps$/i.test(td.innerText.trim())) {
-              if (td.nextElementSibling && td.nextElementSibling.innerText) {
-                differences.push(stringToMinutes(td.nextElementSibling.innerText));
+            if (td.textContent && /^différentiel\shebdomadaire|compensation\stemps$/i.test(td.textContent.trim())) {
+              if (td.nextElementSibling && td.nextElementSibling.textContent) {
+                differences.push(stringToMinutes(td.nextElementSibling.textContent));
               }
             }
           })
         });
 
-        const prevDay = sheetPage.querySelector('.trToday').previousElementSibling;
-        const prevDayDiffrence = Array.from(prevDay.querySelectorAll('td')).pop();
-        if (prevDayDiffrence && prevDayDiffrence.innerText) {
-          differences.unshift(stringToMinutes(prevDayDiffrence.innerText.trim()));
+        let weekDifference = 0;
+        let row = sheetPage.querySelector('.trToday');
+        do {
+          row = row.nextElementSibling;
+        } while (!row.classList.contains('summaryTr'));
+
+        if (row) {
+          const difference = row.querySelector('td:last-child').textContent.trim();
+          weekDifference = stringToMinutes(difference);
+          differences.unshift(weekDifference);
         }
 
         return differences
