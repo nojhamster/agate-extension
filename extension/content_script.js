@@ -155,30 +155,28 @@
       try {
         overtimeBalance = await getOvertimeBalance();
       } catch (e) {
-        console.error('Failed to download overtime balances');
+        console.error('Failed to download overtime balance');
         console.error(e);
       }
 
-      if (overtimeBalance !== 0) {
-        let weeklyDifference = 0;
-        try {
-          weeklyDifference = await getWeeklyDifference();
-        } catch (e) {
-          console.error('Failed to download weekly differences');
-          console.error(e);
-        }
-
-        const overTimeButton = document.createElement('button');
-        overTimeButton.classList.add('btn', 'ams-btn');
-        overTimeButton.setAttribute('title', 'Heure(s) supplémentaire(s)');
-        overTimeButton.innerHTML = `
-          <i class="fa fa-${(overtimeBalance + weeklyDifference) > 0 ? 'plus' : 'minus'}"></i>
-          <span class="text"></span>
-        `;
-
-        overTimeButton.querySelector('.text').textContent = minutesToString(overtimeBalance + weeklyDifference);
-        summary.appendChild(overTimeButton);
+      let weeklyDifference = 0;
+      try {
+        weeklyDifference = await getWeeklyDifference();
+      } catch (e) {
+        console.error('Failed to download weekly difference');
+        console.error(e);
       }
+
+      const overTimeButton = document.createElement('button');
+      overTimeButton.classList.add('btn', 'ams-btn');
+      overTimeButton.setAttribute('title', 'Heure(s) supplémentaire(s)');
+      overTimeButton.innerHTML = `
+        <i class="fa fa-${(overtimeBalance + weeklyDifference) > 0 ? 'plus' : 'minus'}"></i>
+        <span class="text"></span>
+      `;
+
+      overTimeButton.querySelector('.text').textContent = minutesToString(overtimeBalance + weeklyDifference);
+      summary.appendChild(overTimeButton);
     }
 
     function createSpinnerButton() {
@@ -367,8 +365,11 @@
         } while (!row.classList.contains('summaryTr'));
 
         if (row) {
+          const todayDifference = sheetPage.querySelector('.trToday td:last-child').textContent.trim();
+          const todayDiff = stringToMinutes(todayDifference);
+      
           const difference = row.querySelector('td:last-child').textContent.trim();
-          weekDifference = stringToMinutes(difference);
+          weekDifference = stringToMinutes(difference) + Math.abs(todayDiff);
           differences.unshift(weekDifference);
         }
 
