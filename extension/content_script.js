@@ -208,7 +208,7 @@
      * @param {String} str
      */
     function stringToMinutes (str) {
-      const match = /^(-)?\s*(\d+)[h:](\d+)$/.exec((str || '').trim())
+      const match = /^(-)?\s*(\d+)\s*[h:]\s*(\d+)$/.exec((str || '').trim())
       if (!match) { return 0 }
 
       const minutes = (parseInt(match[2]) * 60) + parseInt(match[3])
