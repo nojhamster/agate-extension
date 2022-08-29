@@ -121,7 +121,7 @@
         if (clockings.length >= 2) {
           breakTime = (clockings[1]?.clockIn - clockings[0]?.clockOut) || 0;
         }
-        regulation += (breakTime - minBreakTime);
+        regulation += Math.min(breakTime - minBreakTime, 0);
       }
 
       const remainingButton = document.createElement('button');
