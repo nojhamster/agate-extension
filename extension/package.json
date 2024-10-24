@@ -1,0 +1,30 @@
+{
+  "name": "agate-made-simple",
+  "description": "Résume votre sitation horaire sur Agate Tempo, sans prise de tête.",
+  "private": true,
+  "version": "3.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "npm run build:chrome && npm run build:firefox",
+    "build:chrome": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "npm run zip:chrome && npm run zip:firefox",
+    "zip:chrome": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "vue-tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@vueuse/core": "^11.1.0",
+    "floating-vue": "^5.2.2",
+    "vue": "^3.5.11"
+  },
+  "devDependencies": {
+    "@wxt-dev/module-vue": "^1.0.1",
+    "typescript": "^5.6.2",
+    "vue-tsc": "^2.1.6",
+    "wxt": "^0.19.11"
+  }
+}

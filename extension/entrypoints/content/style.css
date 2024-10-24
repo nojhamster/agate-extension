@@ -1,0 +1,47 @@
+.bankHolidayTr {
+  background: repeating-linear-gradient(45deg, #ffe7b8, #ffe7b8 10px, #ffffff 10px, #ffffff 20px);
+}
+
+.ams-summary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .375rem;
+}
+
+.ams-icon-button {
+  min-width: 25px;
+}
+
+.ams-button {
+  background-color: transparent;
+  border: 1px solid #aaa;
+  color: #444;
+  min-width: 25px;
+  padding: 1px 4px;
+  border-radius: 0.15rem;
+}
+.ams-button-primary {
+  background-color: transparent;
+  color: #4583aa;
+  border-color: #4583aa;
+}
+
+.ams-recap > header {
+  font-weight: bold;
+  padding: 5px 10px;
+  border-bottom: 1px solid #aaa;
+}
+
+.ams-grid {
+  display: grid;
+  grid-template-columns: auto min-content;
+  row-gap: 4px;
+  column-gap: 10px;
+  text-align: right;
+  padding: 5px;
+}
+
+.ams-font-bold {
+  font-weight: bold;
+}
