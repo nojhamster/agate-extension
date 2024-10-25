@@ -2,6 +2,15 @@
 
 Agate Made Simple is a browser extension that adds elements to Agate Tempo in order to improve its usability for the CNRS agents.
 
+## Features
+
+The following changes are applied to the timesheet page :
+
+- Displays the remaining worktime of the current day
+- Displays the end-of-day time
+- Adds a more accessible button to display the day's clockings
+- Adds an alternative display of the clockings
+
 ## Development
 
 1. Install NPM packages
