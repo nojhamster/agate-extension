@@ -17,6 +17,9 @@ The following changes are applied to the timesheet page :
 
 ## Running in dev mode
 
+> [!NOTE]
+> Requirements: Node >=18.20.3
+
 1. Install NPM packages
 
 ```Shell
