@@ -11,8 +11,8 @@
     "build:chrome": "wxt build",
     "build:firefox": "wxt build -b firefox",
     "zip": "npm run zip:chrome && npm run zip:firefox",
-    "zip:chrome": "wxt zip",
-    "zip:firefox": "wxt zip -b firefox",
+    "zip:chrome": "wxt --mode production zip",
+    "zip:firefox": "wxt --mode production zip -b firefox",
     "compile": "vue-tsc --noEmit",
     "postinstall": "wxt prepare"
   },
