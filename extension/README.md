@@ -46,14 +46,23 @@ CHROME_PATH=/usr/bin/brave-browser
 
 ## Build for production
 
-The following command builds the extension for production, and generates the ZIP archives to be published on the stores.
+The following command builds the extension for production, and generates ZIP archives to be published on the stores. For the Firefox build, a source ZIP is also generated.
+
+Files are generated into the `.output` directory.
 
 ```Shell
 npm run zip
 ```
 
-**Note:**  
-For the Firefox build, a source ZIP is also generated.
+Alternatively, you can build for a specific browser :
+
+```Shell
+# Build for Chrome only
+npm run zip:chrome
+
+# Build for Firefox only
+npm run zip:firefox
+```
 
 
 ## Recommended IDE Setup
