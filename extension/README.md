@@ -11,7 +11,7 @@ The following changes are applied to the timesheet page :
 - Adds a more accessible button to manage each day's clockings
 - Adds an alternative display of the clockings
 
-## Development
+## Running in dev mode
 
 1. Install NPM packages
 
@@ -39,14 +39,10 @@ CHROME_PATH=/usr/bin/brave-browser
 
 ## Build for production
 
-Build the extension and generate a ZIP archive.
+The following command builds the extension for production, and generates the ZIP archives to be published on the stores.
 
 ```Shell
-# Chrome/Chromium
 npm run zip
-
-# Firefox
-npm run zip:firefox
 ```
 
 **Note:**  
