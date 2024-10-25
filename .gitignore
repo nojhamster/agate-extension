@@ -20,6 +20,7 @@ web-ext.config.ts
 !.vscode/extensions.json
 .idea
 .env
+.env.submit
 .DS_Store
 *.suo
 *.ntvs*
