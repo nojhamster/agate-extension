@@ -11,6 +11,10 @@ The following changes are applied to the timesheet page :
 - Adds a more accessible button to manage each day's clockings
 - Adds an alternative display of the clockings
 
+## Screenshot
+
+![extension screenshot](./screenshot.png)
+
 ## Running in dev mode
 
 1. Install NPM packages
