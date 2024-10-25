@@ -2,6 +2,15 @@
 
 Agate Made Simple is a browser extension that adds elements to Agate Tempo in order to improve its usability for the CNRS agents.
 
+## Features
+
+The following changes are applied to the timesheet page :
+
+- Displays the remaining worktime of the current day
+- Displays the end-of-day time
+- Adds a more accessible button to display the day's clockings
+- Adds an alternative display of the clockings
+
 ## Development
 
 1. Install NPM packages
@@ -46,4 +55,4 @@ For the Firefox build, a source ZIP is also generated.
 
 ## Recommended IDE Setup
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
