@@ -2,7 +2,7 @@
   "name": "agate-made-simple",
   "description": "Résume votre sitation horaire sur Agate Tempo, sans prise de tête.",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "license": "MIT",
   "scripts": {
