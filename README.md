@@ -18,6 +18,9 @@ Liste des modifications apportées :
 ## Chrome / Chromium
   - Installez l'extenson directement depuis le [Chrome Webstore](https://chromewebstore.google.com/detail/agate-made-simple/mgfnjgipkihpmjehffolladofjjbainf)
 
+> [!NOTE]
+> Si une ancienne version de l'extension a déjà été installée lorsque celle-ci n'était pas disponible sur le Chrome Webstore, vous pouvez la supprimer depuis la page de gestion des extensions (icône de puzzle à droite de la barre de recherche, puis "Gérer les extensions")
+
 
 ## Firefox
   - Téléchargez le dernier fichier XPI depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
