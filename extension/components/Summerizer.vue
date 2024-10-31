@@ -74,7 +74,6 @@ const regulation = computed(() => {
 });
 
 const worktime = computed(() => {
-  console.log('WORKTIME', date);
   return getWorktime(clockings.value, now.value);
 });
 
