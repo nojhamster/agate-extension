@@ -12,6 +12,14 @@ import windowStateKeeper from 'electron-window-state';
 
 const store = new Store()
 
+let extensionPath = path.resolve(import.meta.dirname, '../extension');
+
+if (process.env.EXTENSION_PATH) {
+  extensionPath = path.resolve(process.env.EXTENSION_PATH);
+}
+
+console.log('extensionPath', extensionPath);
+
 // Workaround to avoid errors when loading over HTTPS
 app.commandLine.appendSwitch('ignore-certificate-errors')
 
@@ -175,7 +183,7 @@ function clearCasData () {
 
 async function loadExtension () {
   try {
-    await session.fromPartition('persist:agate').loadExtension(path.resolve('extension/.output/chrome-mv3'))
+    await session.fromPartition('persist:agate').loadExtension(extensionPath)
   } catch (e) {
     console.error(`Failed to load extension: ${e}`)
   }

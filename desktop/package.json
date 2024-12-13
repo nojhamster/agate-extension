@@ -5,12 +5,13 @@
   "description": "Résume votre sitation horaire, sans prise de tête.",
   "main": "main.mjs",
   "scripts": {
-    "start": "electron .",
+    "start": "EXTENSION_PATH=../extension/.output/chrome-mv3 electron .",
+    "build:unpacked": "electron-builder build --dir",
     "dist": "electron-builder -mwl",
     "dist:docker": "./dist.sh",
     "dist:linux": "electron-builder -l",
     "dist:mac": "electron-builder -m",
-    "dist:windows": "electron-builder -w",
+    "dist:windows": "electron-builder -w"
   },
   "repository": "https://github.com/nojhamster/agate-extension",
   "keywords": [
@@ -30,6 +31,12 @@
   },
   "build": {
     "appId": "com.agateb.app",
+    "extraResources": [
+      {
+        "from": "../extension",
+        "to": "extension"
+      }
+    ],
     "linux": {
       "target": [
         "AppImage",
