@@ -16,9 +16,9 @@
   <webview id="webview" preload="../js/preload-webview.js" partition="persist:agate"></webview>
 
   <script>
-    const autoUpdateUserId = window.store.get('userIdAutoUpdate')
-    const userId = window.store.get('userId')
-    const startPage = window.store.get('startPage')
+    let autoUpdateUserId;
+    let userId;
+    let startPage;
 
     window.utils.onMenuNavigation((page) => {
       loadPage(page);
@@ -29,6 +29,12 @@
     window.utils.onGoForward(() => {
       if (webview.canGoForward()) { webview.goForward() }
     });
+
+    async function loadConfig() {
+      autoUpdateUserId = await window.store.get('userIdAutoUpdate')
+      userId = await window.store.get('userId')
+      startPage = await window.store.get('startPage')
+    }
 
     function loadPage(page) {
       const baseUrl = 'https://agate-tempo.cnrs.fr/fr';
@@ -61,7 +67,7 @@
       webview.src = window.utils.formatUrl(targetUrl);
     }
 
-    onload = () => {
+    function load() {
       const webview = document.getElementById('webview')
       const loader = document.getElementById('loader')
 
@@ -102,12 +108,18 @@
             || /\/absence\/daysdonation\/(?:donation\/)?([0-9]+)/i.exec(e?.url)?.[1];
 
           if (id && id !== userId) {
-            window.store.set('userId', id)
+            window.store.set('userId', id).catch((e) => { console.error(e); });
           }
         })
       }
 
       loadPage(startPage);
+    }
+
+    onload = function () {
+      loadConfig()
+        .catch(err => { console.error(err) })
+        .finally(() => { load() });
     }
   </script>
 </body>

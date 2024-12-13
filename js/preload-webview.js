@@ -1,7 +1,3 @@
-if (window.location.host === 'agate-tempo.cnrs.fr') {
-  require('../extension/content_script.js')
-}
-
 if (window.location.host === 'janus.cnrs.fr') {
   window.addEventListener('load', () => {
     const usernameInput = document.getElementById('username')

@@ -3,7 +3,7 @@
   "productName": "Agate Desktop",
   "version": "2.0.1",
   "description": "Résume votre sitation horaire, sans prise de tête.",
-  "main": "main.js",
+  "main": "main.mjs",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder -mwl",
@@ -20,13 +20,13 @@
   "author": "Yannick Schurter <yannick.schurter@gmail.com>",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^18.2.0",
-    "electron-builder": "^23.0.3"
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8"
   },
   "dependencies": {
-    "electron-store": "^8.0.1",
+    "electron-store": "^10.0.0",
     "electron-window-state": "^5.0.3",
-    "uikit": "^3.14.0"
+    "uikit": "^3.21.16"
   },
   "build": {
     "appId": "com.agateb.app",

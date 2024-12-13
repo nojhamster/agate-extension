@@ -79,15 +79,19 @@
     const userAutoUpdateInput = document.getElementById('user-id-auto-update')
     const startPage = document.getElementById('start-page')
 
-    userAutoUpdateInput.checked = window.store.get('userIdAutoUpdate') !== false
-    userInput.value = window.store.get('userId') || ''
-    startPage.value = window.store.get('startPage') || 'home'
+    async function loadSettings() {
+      userAutoUpdateInput.checked = (await window.store.get('userIdAutoUpdate')) !== false
+      userInput.value = (await window.store.get('userId')) || ''
+      startPage.value = (await window.store.get('startPage')) || 'home'
+    }
 
-    settingsForm.addEventListener('submit', event => {
+    loadSettings().catch(err => { console.error(err) })
+
+    settingsForm.addEventListener('submit', async event => {
       event.preventDefault()
-      window.store.set('userIdAutoUpdate', userAutoUpdateInput.checked)
-      window.store.set('userId', userInput.value)
-      window.store.set('startPage', startPage.value)
+      await window.store.set('userIdAutoUpdate', userAutoUpdateInput.checked)
+      await window.store.set('userId', userInput.value)
+      await window.store.set('startPage', startPage.value)
       window.location.href = './index.html'
     })
   </script>

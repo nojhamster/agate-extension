@@ -1,12 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const url = require('url');
-const Store = require('electron-store');
-const store = new Store();
 
 contextBridge.exposeInMainWorld(
   'store', {
-    get (name) { return store.get(name); },
-    set (name, value) { return store.set(name, value); },
+    get (...params) { return ipcRenderer.invoke('store-get', ...params) },
+    set (...params) { return ipcRenderer.invoke('store-set', ...params); },
   }
 );
 

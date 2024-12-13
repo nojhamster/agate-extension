@@ -1,20 +1,22 @@
-const {
+import {
   app,
   Menu,
   BrowserWindow,
   session,
   shell,
   ipcMain,
-} = require('electron')
-const path = require('path')
-const Store = require('electron-store')
-const windowStateKeeper = require('electron-window-state');
+} from 'electron'
+import path from 'path';
+import Store from 'electron-store';
+import windowStateKeeper from 'electron-window-state';
 
 const store = new Store()
 
 // Workaround to avoid errors when loading over HTTPS
 app.commandLine.appendSwitch('ignore-certificate-errors')
 
+ipcMain.handle('store-get', (_event, ...params) => store.get(...params))
+ipcMain.handle('store-set', (_event, ...params) => store.set(...params))
 ipcMain.handle('get-app-name', () => app.getName())
 ipcMain.handle('get-app-version', () => app.getVersion())
 
@@ -37,9 +39,11 @@ function createMainWindow () {
     height: mainWindowState.height,
     title: 'Agate',
     webPreferences: {
+      contextIsolation: true,
+      sandbox: false,
       enableRemoteModule: false,
       webviewTag: true,
-      preload: path.resolve(__dirname, 'js/preload-main.js'),
+      preload: path.resolve(import.meta.dirname, 'js/preload-main.js'),
     }
   })
 
@@ -169,6 +173,14 @@ function clearCasData () {
   }
 }
 
+async function loadExtension () {
+  try {
+    await session.fromPartition('persist:agate').loadExtension(path.resolve('extension/.output/chrome-mv3'))
+  } catch (e) {
+    console.error(`Failed to load extension: ${e}`)
+  }
+}
+
 function createAboutWindow () {
   const bounds = mainWindow.getBounds()
   const width = 400
@@ -183,7 +195,7 @@ function createAboutWindow () {
     height,
     parent: mainWindow,
     webPreferences: {
-      preload: path.resolve(__dirname, 'js/preload-main.js'),
+      preload: path.resolve(import.meta.dirname, 'js/preload-main.js'),
     }
   })
 
@@ -198,7 +210,8 @@ function createAboutWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
+app.on('ready', async () => {
+  await loadExtension()
   createMenu()
   createMainWindow()
 })
