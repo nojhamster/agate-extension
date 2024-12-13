@@ -11,7 +11,6 @@
     "dist:linux": "electron-builder -l",
     "dist:mac": "electron-builder -m",
     "dist:windows": "electron-builder -w",
-    "patchversion:bookmark": "sed -i \"s#\\(agate-extension/v\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" bookmark.html README.md",
     "patchversion:manifest": "sed -i \"s#\\(\\\"version\\\": \\\"\\)\\([\\.0-9]\\+\\)#\\1${npm_package_version}#g\" extension/manifest.json",
     "version": "npm run patchversion:bookmark && npm run patchversion:manifest && git add bookmark.html README.md extension/manifest.json"
   },
