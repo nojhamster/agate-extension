@@ -30,9 +30,6 @@ Liste des modifications apportées :
 
 # Agate Desktop
 
-> [!WARNING]
-> L'application de bureau n'a pas encore été mise à jour pour supporter les dernières modifications d'Agate Tempo
-
 Avec l'application **Agate Desktop**, vous pouvez désormais accéder à Agate depuis votre bureau. Disponible pour **Windows** et **Linux**, en version installable ou standalone, celle-ci permet d'accéder rapidement à Agate et intègre les fonctionnalités de l'extension. Vous pouvez télécharger la dernière version depuis la [page des releases](https://github.com/nojhamster/agate-extension/releases).
 
 **Node Bene**:
